@@ -1,0 +1,24 @@
+-Line
+	-stroke+width
+	-can clip
+-Rect
+	-fill+stroke+width
+	-as clip
+-Circle
+	-fill+stroke+width
+-Polygon
+	-fill+stroke+width
+-Text
+	-fill+stroke
+-Path
+	*Not implemented
+-G
+	*Not Implemented
+-Font
+	*Not Implemented
+-Glyph
+	*Not Implemented
+-Ellipse
+	-fill+stroke+width
+-ClipPath
+	-Rect

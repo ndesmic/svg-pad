@@ -1,0 +1,22 @@
+-add filter debug system
+-saving combined CSS+SVG
+-combined CSS+SVG
+-saving by context 
+	-CSS
+	-SVG
+-pretty print by context 
+	-CSS
+	-SVG
+-shortcut keys
+	-ctrl + s
+	-ctrl + alt + s
+-undo
+-dropbox icon
+-clip UI
+-g UI
+-font UI
+	-glyph
+-reset button
+
+-background for SVG workspace
+-background for CSS workspace

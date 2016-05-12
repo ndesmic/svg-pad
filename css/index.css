@@ -1,0 +1,147 @@
+ul, li { list-style: none; }
+
+html { height: 100%; }
+body { height: 100%; font-family: "arial"; padding: 0px; margin: 0px; }
+nav {
+	height: 30px;
+	-webkit-user-select: none;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+}
+footer { height: 30px; }
+a { border: 1px solid grey; margin: 0px 5px 0px 0px; color: #000; text-decoration: none; padding: 3px; cursor: pointer; -moz-box-sizing: border-box; box-sizing: border-box; }
+#editor{
+	height: 100%;
+	width: 50%;
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	tab-size: 4;
+	box-sizing: border-box;
+}
+#editor .CodeMirror{
+	height: 100%;
+}
+#output { height: 100%; width: 50%; float: right; border: 1px solid black; box-sizing: border-box; position: relative; }
+#preview {
+	height: 100%;
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+	background-color: #ffffff;
+	background-image:
+      -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, #eeeeee), color-stop(.25, transparent)),
+      -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #eeeeee), color-stop(.25, transparent)),
+      -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #eeeeee)),
+      -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #eeeeee));
+	background-size:20px 20px;
+	background-position:0 0, 10px 0, 10px -10px, 0px 10px;
+}
+#preview:after { content: "SVG"; position: absolute; right: 0px; bottom: 0px; }
+#export {
+	height: 50%;
+	width: 100%;
+	padding: 5px;
+	border-top: 1px solid black;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	display: none;
+	background-color: #ffffff;
+	background-image:
+      -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, #eeeeee), color-stop(.25, transparent)),
+      -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #eeeeee), color-stop(.25, transparent)),
+      -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #eeeeee)),
+      -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #eeeeee));
+	background-size:20px 20px;
+	background-position:0 0, 10px 0, 10px -10px, 0px 10px;
+}
+#export:after { content: "Canvas"; position: absolute; right: 0px; bottom: 0px; }
+#main {
+	height: calc(100% - 60px);
+	box-sizing: border-box;
+	position: relative;
+}
+/*
+#workspace.svg-over { border: 3px solid green; }
+#workspace.css-over { border: 3px solid blue; }
+#workspace.file-error { border: 3px solid red; }
+*/
+
+nav a { display: inline-block; padding: 0px; height: 25px; width: 25px; overflow: hidden; vertical-align: top;}
+#btn-save { background: url(../svg/disk.svg) no-repeat center center; }
+#btn-export {}
+#btn-line{ background: url(../svg/line.svg) no-repeat center center; }
+#btn-circle{ background: url(../svg/sprite.svg) no-repeat 1px -23px; }
+#btn-rect { background: url(../svg/square.svg) no-repeat center center; }
+#btn-triangle { background: url(../svg/triangle.svg) no-repeat center center; }
+#btn-ellipse { background: url(../svg/sprite.svg) no-repeat 0px -75px; }
+#btn-path { background: url(../svg/path.svg) no-repeat center center; }
+#btn-text{ background: url(../svg/text.svg) no-repeat 0px 3px; }
+#btn-pretty-print { background: url(../svg/bracket.svg) no-repeat center center; }
+#btn-settings {}
+#btn-dropbox {}
+
+.tabs {
+	font-size: 0px;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	user-select: none;
+}
+.mode {
+	display: inline-block;
+	border-right: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	border-top: 1px solid #CCCCCC;
+	border-left: none;
+	vertical-align: top;
+	background-color: #FFFFFF;
+	box-sizing: border-box;
+	margin-right: 0px;
+	font-size: 16px;
+	position: relative;
+	top: -1px;
+	z-index: 1;
+}
+.mode:first-child { border-left: 1px solid #CCCCCC; }
+.mode.active {
+	border-top: #ffffff;
+	padding: 5px 3px;
+}
+.workspace { z-index: 0; }
+.workspace.active { z-index: 1; }
+#mode-svg.svg-over { border: 2px solid green; }
+#mode-css.css-over { border: 2px solid blue; }
+
+#lightbox{
+	position: fixed;
+	width: 50%;
+	height: 50%;
+	background: #ffffff;
+	top: 25%;
+	left: 25%;
+	box-shadow: 0px 0px 0px 1000px rgba(0, 0, 0, 0.5);
+}
+#lightbox .close{
+	display: block;
+	width: 16px;
+	height: 16px;
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	padding: 0px;
+	background-color: #ffffff;
+	border: 1px solid black;
+	border-radius: 8px;
+}
+#lightbox .close::before{
+	content: "X";
+}
+#lightbox .close:hover{
+	color: red;
+	border: 1px solid red;
+}
