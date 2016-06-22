@@ -9,8 +9,8 @@
 	<body>
 		<nav>
 			<a id="btn-save" download="image.svg" title="save"></a>
-			<a id="btn-export" title="export">Export</a>
-			<a id="btn-export-preview" title="export preview">Export Preview</a>
+			<a id="btn-export" title="export"></a>
+			<a id="btn-export-preview" title="export preview"></a>
 			<a id="btn-line" title="line"></a>
 			<a id="btn-rect" title="rectangle"></a>
 			<a id="btn-circle" title="circle"></a>
@@ -19,38 +19,35 @@
 			<a id="btn-path" title="path"></a>
 			<a id="btn-text" title="text"></a>
 			<a id="btn-pretty-print" title="pretty print"></a>
-			<a id="btn-background-color" title="background color">Background Color</a>
+			<a id="btn-background-color" title="background"></a>
 			<a id="btn-settings" title="settings">Settings</a>
-			<a id="btn-dropbox" title="dropbox">Dropbox</a>
+			<a id="btn-dropbox" title="save to dropbox">Dropbox</a>
 		</nav>
 		<div id="main">
-			<div id="editor">
-				<!--<textarea id="css-workspace" class="workspace tab-content" data-tab="css" spellcheck="false"></textarea>-->
-				<!--<textarea id="svg-workspace" class="workspace tab-content" data-tab="svg" spellcheck="false"></textarea>-->
+			<div id="edit-panel" class="tab-control">
+				<div class="tab-contents">
+					<div id="svg-editor" class="editor tab-content" data-tab="svg"></div>
+					<div id="css-editor" class="editor tab-content" data-tab="css"></div>
+				</div>
+				<div class="tabs">
+					<a class="tab selected" data-tab="svg" id="mode-svg">SVG</a>
+					<a class="tab" data-tab="css" id="mode-css">CSS</a>
+				</div>
 			</div>
 			<div id="output">
 				<iframe seamless id="preview"></iframe>
 				<div id="export"></div>
 			</div>
 		</div>
-		<footer>
-			<div class="tabs">
-				<a class="mode tab active" data-tab="svg" id="mode-svg">SVG</a>
-				<a class="mode tab" data-tab="css" id="mode-css">CSS</a>
-			</div>
-		</footer>
-		<script src="lib/jquery-2.0.3.min.js"></script>
-		<script src="lib/crypto-sha1-hmac.js"></script>
-		<script src="lib/ajax.js"></script>
-		<script src="lib/oauth.js"></script>
-		<script src="lib/dropbox.js"></script>
+		<script src="js/lib/dropbox.js"></script>
 		<script src="js/lib/code-mirror.js"></script>
-		<script src="js/lib/dropboxconnector.js"></script>
 		<script src="js/lib/keyboard.js"></script>
 		<script src="js/lib/svg-to-canvas.js"></script>
 		<script src="js/lib/pretty-print.js"></script>
 		<script src="js/lib/utilities.js"></script>
+		<script src="js/lib/dom-tools.js"></script>
 		<script src="js/lib/lightbox.js"></script>
+		<script src="js/lib/tabs.js"></script>
 		<script src="js/views/svg-pad-app.js"></script>
 		<script src="js/index.js"></script>
 	</body>

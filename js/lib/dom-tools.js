@@ -1,10 +1,10 @@
-var dom = (function(){
-	
+var DomTools = (function(){
+
 	//Manipulation
 	function insertAfter(referenceNode, newNode) {
 		referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 	}
-	
+
 	function empty(node){
 		while (node.hasChildNodes()) {
 			node.removeChild(node.lastChild);
@@ -18,36 +18,30 @@ var dom = (function(){
 		}
 	}
 
-	function addClassAll(elementArray, class){
-		for(var i = 0; i < elementArray.length; i++){
-			elementArray[i].addEventListener(listener, handler, true);
-		}
-	}
-
 	//Creation
 	function createElement(element, text){
 		var el = document.createElement(element);
 		elementText(el, text);
 		return el;
 	}
-	
+
 	function elementText(el, text){
 		if(el && text){
 			el.innerText = text;
 		}
 	}
-	
+
 	var createDiv = createElement.bind(this, "div");
 	var createSpan = createElement.bind(this, "span");
 	var createListItem = createElement.bind(this, "li");
 	var createTableCell = createElement.bind(this, "td");
-	
+
 	function createTextBox(){
 		var textbox = document.createElement("input");
 		textbox.attributes["type"] = "text";
 		return textbox;
 	}
-	
+
 	function createUnorderedList(listData){
 		var ul = document.createElement("ul");
 		if(listData){
@@ -57,13 +51,13 @@ var dom = (function(){
 		}
 		return ul;
 	}
-	
+
 	function createListItem(text){
 		var li = document.createElement("li");
 		elementText(li, text);
 		return li;
 	}
-	
+
 	function createTable(tableData, headerData, columnData){
 		var table = document.createElement("table");
 		if(tableData){
@@ -77,25 +71,25 @@ var dom = (function(){
 		}
 		return table;
 	}
-	
+
 	function createTableHead(headerData){
 		var thead = document.createElement("thead");
-		
+
 		if(headerData){
 			var tr = document.createElement("tr");
-			
+
 			for(var i = 0; i < headerData.length; i++){
 				var th = document.createElement("th");
 				th.innerText = headerData[i];
 				tr.appendChild(th);
 			}
-			
+
 			thead.appendChild(tr);
 		}
-	
+
 		return thead;
 	}
-	
+
 	function createColumnGroup(columnData){
 		var colGroup = document.createElement("colgroup");
 		for(var i = 0; i < columnData.length; i++){
@@ -107,41 +101,41 @@ var dom = (function(){
 
 	function createTableBody(tableData){
 		var tbody = document.createElement("tbody");
-		
+
 		if(tableData){
 			for(var i = 0; i < tableData.length; i++){
 				tbody.appendChild(createRow(tableData[i]));
 			}
 		}
-		
+
 		return tbody;
 	}
 
 	function createRow(rowData){
 		var row = document.createElement("tr");
-		
+
 		if(rowData){
 			for(var key in rowData){
 				row.appendChild(createCell(rowData[key]))
 			}
 		}
-		
+
 		return row;
 	}
-	
+
 	function createCell(cellData){
 		var cell = document.createElement("td");
 		cell.innerText = cellData;
 		return cell;
 	}
-	
+
 	function getDomData(id){
 		var el = document.getElementById(id);
 		var text = el.innerText;
 		var data = JSON.parse(text);
 		return data;
 	}
-	
+
 	return {
 		insertAfter : insertAfter,
 		empty : empty,

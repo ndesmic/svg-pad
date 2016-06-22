@@ -1,3 +1,7 @@
+* {
+	box-sizing: border-box;
+	position: relative;
+}
 ul, li { list-style: none; }
 
 html { height: 100%; }
@@ -12,19 +16,71 @@ nav {
 }
 footer { height: 30px; }
 a { border: 1px solid grey; margin: 0px 5px 0px 0px; color: #000; text-decoration: none; padding: 3px; cursor: pointer; -moz-box-sizing: border-box; box-sizing: border-box; }
-#editor{
+
+
+#main {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+}
+#edit-panel {
 	height: 100%;
 	width: 50%;
+}
+#edit-panel .tab-contents {
+	height: calc(100% - 30px);
+}
+#edit-panel .tab-content{
+	z-index: 0;
+}
+#edit-panel .tab-content.selected  {
+	z-index: 1;
+}
+
+#edit-panel #css-editor {
+	background: #ccc;
+}
+
+.editor {
 	position: absolute;
 	left: 0px;
-	bottom: 0px;
-	tab-size: 4;
-	box-sizing: border-box;
+	right: 0px;
+	height: 100%;
+	width: 100%;
 }
-#editor .CodeMirror{
+.editor .CodeMirror{
 	height: 100%;
 }
-#output { height: 100%; width: 50%; float: right; border: 1px solid black; box-sizing: border-box; position: relative; }
+#output {
+	height: 100%;
+	width: 50%;
+	border: 1px solid black;
+}
+
+
+.tab {
+	display: inline-block;
+	border-right: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	border-top: 1px solid #CCCCCC;
+	border-left: none;
+	vertical-align: top;
+	background-color: #FFFFFF;
+	box-sizing: border-box;
+	margin-right: 0px;
+	font-size: 16px;
+	position: relative;
+	top: -1px;
+	z-index: 1;
+}
+.tab:first-child { border-left: 1px solid #CCCCCC; }
+.tab.selected {
+	border-top: #ffffff;
+	padding: 5px 3px;
+}
+
+
 #preview {
 	height: 100%;
 	display: block;
@@ -74,15 +130,17 @@ a { border: 1px solid grey; margin: 0px 5px 0px 0px; color: #000; text-decoratio
 
 nav a { display: inline-block; padding: 0px; height: 25px; width: 25px; overflow: hidden; vertical-align: top;}
 #btn-save { background: url(../svg/disk.svg) no-repeat center center; }
-#btn-export {}
+#btn-export { background: url(../svg/export.svg) no-repeat center center; }
+#btn-export-preview { background: url(../svg/export-preview.svg) no-repeat center center; }
 #btn-line{ background: url(../svg/line.svg) no-repeat center center; }
-#btn-circle{ background: url(../svg/sprite.svg) no-repeat 1px -23px; }
+#btn-circle{ background: url(../svg/circle.svg) no-repeat center center; }
 #btn-rect { background: url(../svg/square.svg) no-repeat center center; }
 #btn-triangle { background: url(../svg/triangle.svg) no-repeat center center; }
-#btn-ellipse { background: url(../svg/sprite.svg) no-repeat 0px -75px; }
+#btn-ellipse { background: url(../svg/ellipse.svg) no-repeat center center; }
 #btn-path { background: url(../svg/path.svg) no-repeat center center; }
 #btn-text{ background: url(../svg/text.svg) no-repeat 0px 3px; }
 #btn-pretty-print { background: url(../svg/bracket.svg) no-repeat center center; }
+#btn-background-color { background: url(../svg/background.svg) no-repeat center center; }
 #btn-settings {}
 #btn-dropbox {}
 
@@ -92,26 +150,7 @@ nav a { display: inline-block; padding: 0px; height: 25px; width: 25px; overflow
 	-webkit-user-select: none;
 	user-select: none;
 }
-.mode {
-	display: inline-block;
-	border-right: 1px solid #CCCCCC;
-	border-bottom: 1px solid #CCCCCC;
-	border-top: 1px solid #CCCCCC;
-	border-left: none;
-	vertical-align: top;
-	background-color: #FFFFFF;
-	box-sizing: border-box;
-	margin-right: 0px;
-	font-size: 16px;
-	position: relative;
-	top: -1px;
-	z-index: 1;
-}
-.mode:first-child { border-left: 1px solid #CCCCCC; }
-.mode.active {
-	border-top: #ffffff;
-	padding: 5px 3px;
-}
+
 .workspace { z-index: 0; }
 .workspace.active { z-index: 1; }
 #mode-svg.svg-over { border: 2px solid green; }

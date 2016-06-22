@@ -2,8 +2,9 @@
 
 let SvgPad = (function(){
 
-	let defaults = {
- 		defaultSvg : PrettyPrint.prettyPrintXml('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="100" width="100">\n\r</svg>')
+	const defaults = {
+ 		defaultSvg : PrettyPrint.prettyPrintXml('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="100" width="100">\n\r</svg>'),
+		dropbox : null
 	};
 
 	function create(options){
@@ -90,7 +91,10 @@ let SvgPad = (function(){
 		this.dom.export = document.querySelector("#export")
 		this.dom.cssMode = document.querySelector("#mode-css");
 		this.dom.workspaceTabs = document.querySelector(".mode.tab");
-		this.dom.editor = document.querySelector("#editor");
+
+		this.dom.editPanel = document.querySelector("#edit-panel");
+		this.dom.svgEditor = document.querySelector("#svg-editor");
+		this.dom.cssEditor = document.querySelector("#css-editor");
 
 		this.dom.svgTab = document.querySelector("#mode-svg");
 		this.dom.cssTab = document.querySelector("#mode-css");
@@ -98,14 +102,22 @@ let SvgPad = (function(){
 
 	function attachSubviews(){
 		this.subviews = {};
-		//this.dom.cssWorkspace.value = storedOrDefault("lastCssSave");
 
-		this.subviews.svgEditor = CodeMirror(this.dom.editor, {
+		this.subviews.svgEditor = CodeMirror(this.dom.svgEditor, {
 			value : storedOrDefault("lastSvgSave", this.options.defaultSvg),
 			lineNumbers : true,
 			lineWrapping: true,
-			indentWithTabs: true,
+			indentWithTabs: true
+		});
+		this.subviews.cssEditor = CodeMirror(this.dom.cssEditor, {
+			value : storedOrDefault("lastCssSave", ""),
+			lineNumbers : true,
+			lineWrapping: true,
+			indentWithTabs: true
+		});
 
+		this.subviews.editTabs = Tabs.create({
+			root : this.dom.editPanel
 		});
 	}
 
@@ -115,7 +127,8 @@ let SvgPad = (function(){
 		//self.dom.workspace.addEventListener("drop", self.fileDrop);
 		//self.dom.cssWorkspace.addEventListener("input", self.update);
 
-		this.subviews.svgEditor.on("change", this.update);//this.update
+		this.subviews.svgEditor.on("change", this.update);
+		this.subviews.cssEditor.on("change", this.update);
 		this.dom.dropboxButton.addEventListener("click", this.cloudSaveFile);
 		this.dom.backgroundColorButton.addEventListener("click", this.changeBackgroundColor);
 		this.dom.exportPreviewButton.addEventListener("click", this.exportPreview);
@@ -131,8 +144,6 @@ let SvgPad = (function(){
 		this.dom.triangleButton.addEventListener("click", this.inserts.triangle);
 		this.dom.pathButton.addEventListener("click", this.inserts.path);
 		this.dom.textButton.addEventListener("click", this.inserts.text);
-
-		Keyboard.register("ctrl+z", function(){ alert("ctrl-z") });
 	}
 
 	function storedOrDefault(key, defaultValue){
@@ -160,17 +171,17 @@ let SvgPad = (function(){
 		this.dom.export.style.display = "none";
 
 		this.svgData = this.subviews.svgEditor.getValue();
-		//self.cssData = self.dom.cssWorkspace.value;
+		this.cssData = this.subviews.cssEditor.getValue();
 
 		this.svgBlob = new Blob([this.svgData], { type : "image/svg+xml" });
-		//this.cssBlob = new Blob([self.cssData], { type : "text/css" });
+		this.cssBlob = new Blob([this.cssData], { type : "text/css" });
 
 		window.URL.revokeObjectURL(this.svgUrl);
-		//window.URL.revokeObjectURL(self.cssUrl);
+		window.URL.revokeObjectURL(this.cssUrl);
 		window.URL.revokeObjectURL(this.docUrl);
 
 		this.svgUrl = window.URL.createObjectURL(this.svgBlob);
-		//this.cssUrl = window.URL.createObjectURL(this.cssBlob);
+		this.cssUrl = window.URL.createObjectURL(this.cssBlob);
 		var doc = util.createDocument(this.cssUrl, this.svgData);
 		var docBlob = new Blob([doc], { type : "text/html" });
 		this.docUrl = window.URL.createObjectURL(docBlob);
@@ -182,59 +193,57 @@ let SvgPad = (function(){
 	}
 
 	function updateSettings(){
-		var self = this;
-		localStorage.setItem("lastSettings", JSON.stringify(self.settings));
+		localStorage.setItem("lastSettings", JSON.stringify(this.settings));
 	}
 
 	function exportPreview(){
-		var self = this;
-		var canvas = svgToCanvas.svgToCanvas(self.dom.svgWorkspace.val(), self.dom.cssWorkspace.val());
-		self.dom.export.html(canvas);
-		self.dom.export.show();
+		var canvas = svgToCanvas.svgToCanvas(this.subviews.svgEditor.getValue(), "");
+		DomTools.empty(this.dom.export);
+		this.dom.export.appendChild(canvas);
+		this.dom.export.style.display = "block";
 	}
 
 	function exportImageDownload(){
-		var self = this;
-		var canvas = svgToCanvas.svgToCanvas(self.dom.svgWorkspace.val(), self.dom.cssWorkspace.val());
+		var canvas = svgToCanvas.svgToCanvas(this.subviews.svgEditor.getValue(), "");
 		var exportUrl = canvas.toDataURL("image/png");
 		util.download(exportUrl, "image.png");
 	}
 
 	function exportImageWindow(e){
-		var self = this;
-		var canvas = svgToCanvas.svgToCanvas(self.dom.svgWorkspace.val(), self.dom.cssWorkspace.val());
+		var canvas = svgToCanvas.svgToCanvas(this.subviews.svgEditor.getValue(), "");
 		var exportUrl = canvas.toDataURL("image/png");
 		window.open(exportUrl, "Exported Image");
 		e.preventDefault();
 	}
 
 	function prettyPrintSvg(){
-		var self = this;
-		var value = self.dom.svgWorkspace.val();
-		self.dom.svgWorkspace.val(prettyPrint.prettyPrintXML(value));
+		var value = this.subviews.svgEditor.getValue();
+		this.subviews.svgEditor.setValue(prettyPrint.prettyPrintXML(value));
 	}
 
 	function changeBackgroundColor(){
-		var self = this;
 		var color = prompt("Please choose a color");
 		if(color){
-			self.set.backgroundColor(color);
+			this.set.backgroundColor(color);
 		}
 	}
 
 	function cloudSaveFile(){
-		var self = this;
-		var fileName = prompt("Please enter a name.");
+		if(!this.options.dropbox.isAuthorized()){
+			this.options.dropbox.authorize();
+			return;
+		}
+		let fileName = prompt("Please enter a name.");
 		if(fileName){
 			fileName = util.normalizeFileName(fileName);
-			self.options.dbc.save(self.svgBlob, fileName, function(){
-				alert("success!");
-			});
+			this.options.dropbox.upload(this.svgBlob, {
+				path : fileName
+			})
+			.then(() => alert("success!"));
 		}
 	}
 
 	function reset(){
-		var self = this;
 		localStorage.setItem("lastSvgSave");
 		localStorage.setItem("lastCssSave");
 		localStorage.setItem("lastSettings");
