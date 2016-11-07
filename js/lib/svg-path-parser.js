@@ -1,10 +1,10 @@
-var SvgPath = (function(){
+const SvgPathParser = (function(){
 
-	var defaults = {
+	const defaults = {
 		canvas : null
-	}
+	};
 
-	var controlChars = {
+	const controlChars = {
 		"M" : "moveAbsolute",
 		"m" : "moveRelative",
 		"L" : "lineAbsolute",
@@ -28,7 +28,7 @@ var SvgPath = (function(){
 	};
 
 	function create(options){
-		var svgPath = {};
+		let svgPath = {};
 		svgPath.options = Object.assign({}, defaults, options);
 		bind(svgPath);
 		return svgPath;
@@ -39,19 +39,20 @@ var SvgPath = (function(){
 	}
 
 	function parsePath(pathData){
-		var pathDataParts = splitWhitespace(pathData);
-		var pathInstructions = [];
-		var partIndex = 0;
+		let pathDataParts = splitWhitespace(pathData);
+		let pathInstructions = [];
+		let partIndex = 0;
 
 		while(partIndex < pathDataParts.length){
-			var pathPart = pathDataParts[partIndex].trim();
+			let pathPart = pathDataParts[partIndex].trim();
 
 			if(partContainsControlChar(pathPart)){
-				var instruction = {};
-				instruction.type = controlChars[pathPart.charAt(0)];
-				instruction.points = [];
+				let instruction = {
+				      type : controlChars[pathPart.charAt(0)],
+				      points : []
+        };
 				if(pathPart.length > 1){
-					instruction.points = pathPart.substr(1).split(",").map(x => parseFloat(x));
+					instruction.points = pathPart.substr(1).split(",").map(x => parseFloat(x)).filter(x => !isNaN(x));
 				}
 				while(partIndex + 1 < pathDataParts.length && !partContainsControlChar(pathDataParts[partIndex + 1])){
 					partIndex++;
@@ -68,7 +69,7 @@ var SvgPath = (function(){
 		return pathInstructions;
 	}
 	function isWhitespace(char){
-  		var whitespace = [
+  		const whitespace = [
 			String.fromCharCode(13), //carriage return
 			String.fromCharCode(10), //new line
 			String.fromCharCode(32), //space
@@ -77,11 +78,11 @@ var SvgPath = (function(){
   		return whitespace.indexOf(char) != -1;
 	}
 	function splitWhitespace(text){
-		var split = [];
-		var buffer = "";
-		var quoted = false;
-		var readWhitespace = false;
-		for(var i = 0; i < text.length; i++){
+		let split = [];
+		let buffer = "";
+		let quoted = false;
+		let readWhitespace = false;
+		for(let i = 0; i < text.length; i++){
 			if(isWhitespace(text[i]) && !quoted && !readWhitespace){
 				split.push(buffer);
 				buffer = "";
@@ -114,7 +115,7 @@ var SvgPath = (function(){
 	}
 
 	return {
-		create : create
+		create
 	};
 
 })();

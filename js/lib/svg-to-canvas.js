@@ -3,7 +3,7 @@ const svgToCanvas = (function(){
 	let canvas;
 	let context;
 	let assets = {};
-	let svgPath = SvgPath.create();
+	let svgPathParser = SvgPathParser.create();
 	let instructionSimplifier = InstructionSimplifier.create();
 	let canvasRenderer;
 
@@ -158,9 +158,13 @@ const svgToCanvas = (function(){
 	}
 
 	function drawPath(svgEl){
-		let instructionList = svgPath.parsePath(getAttr(svgEl, "d"));
+		let instructionList = svgPathParser.parsePath(getAttr(svgEl, "d"));
 		instructionList = instructionSimplifier.simplifyInstructions(instructionList);
-		canvasRenderer.drawInstructionList(instructionList);
+		canvasRenderer.drawInstructionList(instructionList, {
+      strokeColor : getAttr(svgEl, "stroke"),
+      strokeWidth : getAttr(svgEl, "stroke-width"),
+      fillColor : getAttr(svgEl, "fill")
+    });
 	}
 
 	function drawG(svgEl){
