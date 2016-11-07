@@ -1,0 +1,22 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="25" width="25">
+	<line x1="12.5" y1="6.25" x2="18.75" y2="12.5" stroke="black" stroke-width="1" />
+	<line x1="18.5" y1="12.25" x2="12.5" y2="18.75" stroke="black" stroke-width="1" />
+	<line x1="12.5" y1="18.25" x2="6.25" y2="12.5" stroke="black" stroke-width="1" />
+	<line x1="6.25" y1="12.5" x2="12.5" y2="6.25" stroke="black" stroke-width="1" />
+	
+	<line x1="12.5" y1="6.25" x2="15.625" y2="3.125" stroke="black" stroke-width="1" />
+	<line x1="15.625" y1="3.125" x2="21.625" y2="9.375" stroke="black" stroke-width="1" />
+	<line x1="21.625" y1="9.375" x2="18.75" y2="12.5" stroke="black" stroke-width="1" />
+	
+	<line x1="18.75" y1="12.5" x2="21.625" y2="15.625" stroke="black" stroke-width="1" />
+	<line x1="21.625" y1="15.625" x2="15.625" y2="21.875" stroke="black" stroke-width="1" />
+	<line x1="15.625" y1="21.875" x2="12.5" y2="18.75" stroke="black" stroke-width="1" />
+	
+	<line x1="12.5" y1="6.25" x2="9.375" y2="3.125" stroke="black" stroke-width="1" />
+	<line x1="9.375" y1="3.125" x2="3.125" y2="9.375" stroke="black" stroke-width="1" />
+	<line x1="3.125" y1="9.375" x2="6.25" y2="12.5" stroke="black" stroke-width="1" />
+	
+	<line x1="6.25" y1="12.5" x2="3.125" y2="15.625" stroke="black" stroke-width="1" />
+	<line x1="3.125" y1="15.625" x2="9.375" y2="21.875" stroke="black" stroke-width="1" />
+	<line x1="9.375" y1="21.875" x2="12.5" y2="18.75" stroke="black" stroke-width="1" />
+</svg>

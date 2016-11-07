@@ -1,16 +1,18 @@
-var svgToCanvas = (function(){
-	var canvas;
-	var context;
-	var assets = {};
+//this is getting hacky, move completely to canvas-renderer when able
+const svgToCanvas = (function(){
+	let canvas;
+	let context;
+	let assets = {};
+	let svgPath = SvgPath.create();
+	let instructionSimplifier = InstructionSimplifier.create();
+	let canvasRenderer;
 
 	function svgToCanvas(svgString){
-		var svgDom = htmlParser(svgString);
-		var svgEl = svgDom.childNodes[0];
+		let svgDom = htmlParser(svgString);
+		let svgEl = svgDom.childNodes[0];
 		canvas = document.createElement("canvas");
 		assets = {};
-
 		drawSvg(svgEl);
-
 		return canvas;
 	}
 
@@ -20,7 +22,10 @@ var svgToCanvas = (function(){
 	}
 
 	function drawSvg(svgEl){
-		context = canvas.getContext("2d");
+		canvasRenderer = CanvasRenderer.create({
+			canvas : canvas
+		});
+		context = canvasRenderer.context;
 		canvas.setAttribute("height", getAttr(svgEl, "height"));
 		canvas.setAttribute("width", getAttr(svgEl, "width"));
 
@@ -153,7 +158,9 @@ var svgToCanvas = (function(){
 	}
 
 	function drawPath(svgEl){
-
+		let instructionList = svgPath.parsePath(getAttr(svgEl, "d"));
+		instructionList = instructionSimplifier.simplifyInstructions(instructionList);
+		canvasRenderer.drawInstructionList(instructionList);
 	}
 
 	function drawG(svgEl){
@@ -281,58 +288,5 @@ var svgToCanvas = (function(){
 	return {
 		svgToCanvas : svgToCanvas
 	}
-
-})();
-
-
-var svgPath = (function(){
-
-	var controlChars = ["M", "m", "L", "l", "H", "h", "V", "v",	"C", "c", "Z", "z", "S", "s", "Q", "q", "T", "t", "A", "a"];
-
-	function drawPath(pathData){
-		var path = parsePath(pathData);
-	}
-
-	function isControlChar(char){
-		return controlChars.indexOf(char) != -1;
-	}
-	function partContainsControlChar(part){
-		return isControlChar(part.charAt(0));
-	}
-
-	function parsePath(pathData){
-		var pathDataParts = pathData.split(" ");
-		var pathInstructions = [];
-		var partIndex = 0;
-
-		while(partIndex < pathDataParts.length){
-			var pathPart = pathDataParts[partIndex].trim();
-
-			if(partContainsControlChar(pathPart)){
-				var instruction = {};
-				instruction.instruction = pathPart.charAt(0);
-				instruction.points = [];
-				if(pathPart.length > 1){
-					instruction.points.push(pathPart.substr(1));
-				}
-				while(partIndex + 1 < pathDataParts.length && !partContainsControlChar(pathDataParts[partIndex + 1])){
-					partIndex++;
-					pathPart = pathDataParts[partIndex];
-					instruction.points.push(pathPart);
-				}
-				pathInstuctions.push(instruction);
-			}else{
-				console.log("unexpected part:", pathPart)
-			}
-			partIndex++;
-		}
-
-		return pathInstructions;
-	}
-
-	return {
-		drawPath : drawPath,
-		_parsePath : parsePath
-	};
 
 })();
