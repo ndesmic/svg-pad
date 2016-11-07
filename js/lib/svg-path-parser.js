@@ -82,6 +82,8 @@ const SvgPathParser = (function(){
 		let buffer = "";
 		let quoted = false;
 		let readWhitespace = false;
+
+    text = text.trim();
 		for(let i = 0; i < text.length; i++){
 			if(isWhitespace(text[i]) && !quoted && !readWhitespace){
 				split.push(buffer);
