@@ -45,6 +45,9 @@ const CanvasRenderer = (function() {
         for (var i = 0; i < pathInstructions.length; i++) {
             this.drawInstruction(pathInstructions[i]);
         }
+        if(options.fillColor){
+          this.context.fill();
+        }
         this.context.stroke();
     }
 
@@ -64,7 +67,7 @@ const CanvasRenderer = (function() {
       options = Object.assign({}, {
         strokeColor : "#000",
         strokeWidth : 1,
-        fillColor : "#000"
+        fillColor : null
       }, options);
       this.context.strokeStyle = options.strokeColor;
       this.context.lineWidth = options.strokeWidth;
@@ -73,34 +76,23 @@ const CanvasRenderer = (function() {
 
     function moveAbsolute(x, y) {
         this.context.moveTo(x, y);
-        this.currentPoint.x = x;
-        this.currentPoint.y = y;
+        this.currentPoint = { x, y };
     }
 
-    function lineAbsolute(x, y, x2, y2) {
-        this.moveAbsolute(x, y);
-        this.context.lineTo(x2, y2);
-        this.currentPoint = {
-            x: x2,
-            y: y2
-        };
+    function lineAbsolute(x, y) {
+        this.context.lineTo(x, y);
+        this.currentPoint = { x, y };
     }
 
     function cubicCurveAbsolute(controlStartX, controlStartY1, controlEndX, controlEndY, x, y) {
         this.context.bezierCurveTo(controlStartX, controlStartY1, controlEndX, controlEndY, x, y);
-        this.currentPoint = {
-            x: x,
-            y: y
-        };
+        this.currentPoint = { x, y };
     }
 
     function init() {
         this.canvas = this.options.canvas || document.createElement("canvas");
         this.context = this.canvas.getContext("2d");
-        this.currentPoint = {
-            x: 0,
-            y: 0
-        };
+        this.currentPoint = { x: 0, y: 0 };
     }
 
     return {
