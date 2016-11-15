@@ -102,7 +102,6 @@ a { border: 1px solid grey; margin: 0px 5px 0px 0px; color: #000; text-decoratio
 	padding: 5px;
 	border-top: 1px solid black;
 	box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	position: absolute;
 	bottom: 0px;
 	left: 0px;
@@ -115,6 +114,7 @@ a { border: 1px solid grey; margin: 0px 5px 0px 0px; color: #000; text-decoratio
       -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #eeeeee));
 	background-size:20px 20px;
 	background-position:0 0, 10px 0, 10px -10px, 0px 10px;
+  overflow: auto;
 }
 #export:after { content: "Canvas"; position: absolute; right: 0px; bottom: 0px; }
 #main {

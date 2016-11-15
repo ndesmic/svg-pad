@@ -34,6 +34,8 @@ const svgToCanvas = (function(){
 
 	function drawSvgElement(svgEl, clip){
 		switch(svgEl.nodeName){
+      case "defs":
+        drawAtomic(drawDefs, svgEl);
 			case "#text":
 				break;
 			case "text":
@@ -174,16 +176,28 @@ const svgToCanvas = (function(){
 		}
 	}
 
+  function drawDefs(svgEl){
+    for(var i = 0; i < svgEl.childNodes.length; i++){
+      var el = svgEl.childNodes[i];
+      drawSvgElement(el);
+    }
+  }
+
 	function drawRectangle(svgEl, clip){
 		var attrs = getMainAttrs(svgEl);
 		attrs.x = getAttr(svgEl, "x");
 		attrs.y = getAttr(svgEl, "y");
 		attrs.height = getAttr(svgEl, "height");
 		attrs.width = getAttr(svgEl, "width");
+    attrs.clipPathUrl = getUrlAttr(svgEl, "clip-path");
 
 		setContextMainAttrs(attrs);
 
 		context.rect(attrs.x, attrs.y, attrs.width, attrs.height);
+
+    if(attrs.clipPathUrl){
+			clip(svgEl, clipPathUrl);
+		}
 
 		if(!clip){
 			strokeAndFill(attrs);

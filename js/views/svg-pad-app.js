@@ -8,7 +8,7 @@ let SvgPad = (function(){
 	};
 
 	function create(options){
-		var svgPad = {};
+		let svgPad = {};
 		svgPad.options = Object.assign({}, defaults, options);
 
 		svgPad.currentSvgData;
@@ -122,11 +122,6 @@ let SvgPad = (function(){
 	}
 
 	function attachEvents(){
-		//self.dom.workspace.addEventListener("dragover", self.fileDragOver);
-		//self.dom.workspace.addEventListener("dragleave", self.fileDragLeave);
-		//self.dom.workspace.addEventListener("drop", self.fileDrop);
-		//self.dom.cssWorkspace.addEventListener("input", self.update);
-
 		this.subviews.svgEditor.on("change", this.update);
 		this.subviews.cssEditor.on("change", this.update);
 		this.dom.dropboxButton.addEventListener("click", this.cloudSaveFile);
@@ -197,14 +192,15 @@ let SvgPad = (function(){
 	}
 
 	function exportPreview(){
-		var canvas = svgToCanvas.svgToCanvas(this.subviews.svgEditor.getValue(), "");
+		//var canvas = svgToCanvas.svgToCanvas(this.subviews.svgEditor.getValue(), "");
+    let canvas = SvgToCanvas2.create().render(this.subviews.svgEditor.getValue());
 		DomTools.empty(this.dom.export);
 		this.dom.export.appendChild(canvas);
 		this.dom.export.style.display = "block";
 	}
 
 	function exportImageDownload(){
-		var canvas = svgToCanvas.svgToCanvas(this.subviews.svgEditor.getValue(), "");
+		let canvas = SvgToCanvas2.create().render(this.subviews.svgEditor.getValue());
 		var exportUrl = canvas.toDataURL("image/png");
 		util.download(exportUrl, "image.png");
 	}
