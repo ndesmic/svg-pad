@@ -62,7 +62,7 @@ const SvgPad = (function(){
 	}
 
 	function init(){
-		//this.installServiceWorker();
+		this.installServiceWorker();
 		this.cacheDom();
 		this.attachSubviews();
 		this.attachEvents()
