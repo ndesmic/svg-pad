@@ -15,6 +15,18 @@ var SvgToCanvas = (function() {
 	function bind(svgToCanvas) {
 		svgToCanvas.render = render.bind(svgToCanvas);
 		svgToCanvas.init = init.bind(svgToCanvas);
+    svgToCanvas.drawAtomic = drawAtomic.bind(svgToCanvas);
+    svgToCanvas.drawElement = drawElement.bind(svgToCanvas);
+    svgToCanvas.drawContainer = drawContainer.bind(svgToCanvas);
+    svgToCanvas.drawPath = drawPath.bind(svgToCanvas);
+    svgToCanvas.drawText = drawText.bind(svgToCanvas);
+    svgToCanvas.drawLine = drawLine.bind(svgToCanvas);
+    svgToCanvas.drawRectangle = drawRectangle.bind(svgToCanvas);
+    svgToCanvas.drawPolygon = drawPolygon.bind(svgToCanvas);
+    svgToCanvas.drawEllipse = drawEllipse.bind(svgToCanvas);
+    svgToCanvas.drawCircle = drawCircle.bind(svgToCanvas);
+    svgToCanvas.drawOval = drawOval.bind(svgToCanvas);
+    svgToCanvas.clip = clip.bind(svgToCanvas);
 	}
 
 	function init() {
@@ -34,7 +46,7 @@ var SvgToCanvas = (function() {
 		canvas.setAttribute("height", getAttr(svgElement, "height"));
 		canvas.setAttribute("width", getAttr(svgElement, "width"));
 
-		drawElement(svgElement, {
+		this.drawElement(svgElement, {
 			document: svgDoc,
 			context: context,
 			defs: {
@@ -50,30 +62,30 @@ var SvgToCanvas = (function() {
 			case "defs":
 			case "svg":
 			case "g":
-				drawAtomic(drawContainer, element, scope);
+				this.drawAtomic(this.drawContainer, element, scope);
 				break;
 			case "#text":
 				break;
 			case "text":
-				drawAtomic(drawText, element, scope);
+				this.drawAtomic(drawText, element, scope);
 				break;
 			case "line":
-				drawAtomic(drawLine, element, scope);
+				this.drawAtomic(drawLine, element, scope);
 				break;
 			case "polygon":
-				drawAtomic(drawPolygon, element, scope)
+				this.drawAtomic(drawPolygon, element, scope)
 				break;
 			case "path":
-				drawAtomic(drawPath, element, scope);
+				this.drawAtomic(this.drawPath, element, scope);
 				break;
 			case "rect":
-				drawAtomic(drawRectangle, element, scope);
+				this.drawAtomic(drawRectangle, element, scope);
 				break;
 			case "circle":
-				drawAtomic(drawCircle, element, scope);
+				this.drawAtomic(drawCircle, element, scope);
 				break;
 			case "ellipse":
-				drawAtomic(drawEllipse, element, scope);
+				this.drawAtomic(drawEllipse, element, scope);
 				break;
 			case "clipPath":
 				const clipPath = getAsClipPath(element);
@@ -88,7 +100,7 @@ var SvgToCanvas = (function() {
 		const clipPath = getUrlAttr(element, "clip-path");
 		scope.context.save();
 		if (clipPath) {
-			clip(scope.defs.clipPaths[clipPath], scope);
+			this.clip(scope.defs.clipPaths[clipPath], scope);
 		}
 		drawFunc.call(this, element, scope);
 		scope.context.restore();
@@ -176,7 +188,7 @@ var SvgToCanvas = (function() {
 	function clip(clipPath, scope) {
 		scope.context.beginPath();
 		for (let element of clipPath) {
-			drawElement(element, scope);
+			this.drawElement(element, scope);
 		}
 		scope.context.clip();
 	}
@@ -184,11 +196,11 @@ var SvgToCanvas = (function() {
 	function drawContainer(element, scope) {
 		const attrs = getAttrs(element);
 		if (attrs.clipPath) {
-			clip(scope.defs.clipPaths[attrs.clipPath], scope);
+			this.clip(scope.defs.clipPaths[attrs.clipPath], scope);
 		}
 		for (var i = 0; i < element.childNodes.length; i++) {
 			var el = element.childNodes[i];
-			drawElement(el, scope);
+			this.drawElement(el, scope);
 		}
 	}
 
