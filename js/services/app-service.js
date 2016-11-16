@@ -2,7 +2,7 @@ const AppService = (function(){
 
 	const defaults = {
 		cacheName : "app-shell",
-		precacheUrls : ["/index.html"]
+		precacheUrls : []
 	};
 
 	function create(options){
