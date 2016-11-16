@@ -275,13 +275,13 @@ var SvgToCanvas = (function() {
 	}
 
 	function drawPath(element, scope) {
-		const attrs = getAttrs(element);
-		let instructionList = this.svgPathParser.parsePath(getAttr(svgEl, "d"));
+		const attrs = getAttrs(element, ["d"]);
+		let instructionList = this.svgPathParser.parsePath(attrs.d);
 		instructionList = this.instructionSimplifier.simplifyInstructions(instructionList);
 		this.canvasRenderer.drawInstructionList(instructionList, {
-			strokeColor: attr.stroke,
-			strokeWidth: attr.strokeWidth,
-			fillColor: attr.fill
+			strokeColor: attrs.stroke,
+			strokeWidth: attrs.strokeWidth,
+			fillColor: attrs.fill
 		});
 	}
 
