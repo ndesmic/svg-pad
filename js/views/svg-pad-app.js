@@ -1,6 +1,6 @@
 "use strict";
 
-let SvgPad = (function(){
+const SvgPad = (function(){
 
 	const defaults = {
  		defaultSvg : PrettyPrint.prettyPrintXml('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="100" width="100">\n\r</svg>'),
@@ -35,6 +35,9 @@ let SvgPad = (function(){
 	}
 
 	function bind(svgPad){
+		svgPad.installServiceWorker = installServiceWorker.bind(svgPad);
+		svgPad.serviceWorkerInstalled = serviceWorkerInstalled.bind(svgPad);
+		svgPad.serviceWorkerInstallFailed = serviceWorkerInstallFailed.bind(svgPad);
 		svgPad.cacheDom = cacheDom.bind(svgPad);
 		svgPad.attachEvents = attachEvents.bind(svgPad);
 		svgPad.attachSubviews = attachSubviews.bind(svgPad);
@@ -59,11 +62,28 @@ let SvgPad = (function(){
 	}
 
 	function init(){
+		//this.installServiceWorker();
 		this.cacheDom();
 		this.attachSubviews();
 		this.attachEvents()
 		this.initSettings();
 		this.update();
+	}
+
+	function installServiceWorker(){
+		if("serviceWorker" in navigator){
+			navigator.serviceWorker.register("service-worker.js", {scope: "./"})
+				.then(this.serviceWorkerInstalled)
+				.catch(this.serviceWorkerInstallFailed);
+		}
+	}
+
+	function serviceWorkerInstalled(registration){
+		console.log("App Service registration successful with scope:", registration.scope);
+	}
+
+	function serviceWorkerInstallFailed(error){
+		console.error("App Service failed to install", error);
 	}
 
 	function cacheDom(){
@@ -192,21 +212,20 @@ let SvgPad = (function(){
 	}
 
 	function exportPreview(){
-		//var canvas = svgToCanvas.svgToCanvas(this.subviews.svgEditor.getValue(), "");
-    let canvas = SvgToCanvas2.create().render(this.subviews.svgEditor.getValue());
+		let canvas = SvgToCanvas.create().render(this.subviews.svgEditor.getValue());
 		DomTools.empty(this.dom.export);
 		this.dom.export.appendChild(canvas);
 		this.dom.export.style.display = "block";
 	}
 
 	function exportImageDownload(){
-		let canvas = SvgToCanvas2.create().render(this.subviews.svgEditor.getValue());
+		let canvas = SvgToCanvas.create().render(this.subviews.svgEditor.getValue());
 		var exportUrl = canvas.toDataURL("image/png");
 		util.download(exportUrl, "image.png");
 	}
 
 	function exportImageWindow(e){
-		var canvas = svgToCanvas.svgToCanvas(this.subviews.svgEditor.getValue(), "");
+		let canvas = SvgToCanvas.create().render(this.subviews.svgEditor.getValue());
 		var exportUrl = canvas.toDataURL("image/png");
 		window.open(exportUrl, "Exported Image");
 		e.preventDefault();

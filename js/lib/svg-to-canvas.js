@@ -1,157 +1,162 @@
-//this is getting hacky, move completely to canvas-renderer when able
-const svgToCanvas = (function(){
-	let canvas;
-	let context;
-	let assets = {};
-	let svgPathParser = SvgPathParser.create();
-	let instructionSimplifier = InstructionSimplifier.create();
-	let canvasRenderer;
+var SvgToCanvas = (function() {
 
-	function svgToCanvas(svgString){
-		let svgDom = htmlParser(svgString);
-		let svgEl = svgDom.childNodes[0];
-		canvas = document.createElement("canvas");
-		assets = {};
-		drawSvg(svgEl);
+	const defaults = {
+		canvas: null //required
+	};
+
+	function create(options) {
+		let svgToCanvas = {};
+		svgToCanvas.options = Object.assign({}, defaults, options);
+		bind(svgToCanvas);
+		svgToCanvas.init();
+		return svgToCanvas;
+	}
+
+	function bind(svgToCanvas) {
+		svgToCanvas.render = render.bind(svgToCanvas);
+		svgToCanvas.init = init.bind(svgToCanvas);
+	}
+
+	function init() {
+		const canvas = this.options.canvas || document.createElement("canvas");
+		this.svgPathParser = SvgPathParser.create();
+		this.instructionSimplifier = InstructionSimplifier.create();
+		this.canvasRenderer = CanvasRenderer.create({
+			canvas
+		});
+	}
+
+	function render(svgText) {
+		const svgDoc = parseXml(svgText);
+		const svgElement = svgDoc.childNodes[0];
+		const context = this.canvasRenderer.context;
+		const canvas = context.canvas;
+		canvas.setAttribute("height", getAttr(svgElement, "height"));
+		canvas.setAttribute("width", getAttr(svgElement, "width"));
+
+		drawElement(svgElement, {
+			document: svgDoc,
+			context: context,
+			defs: {
+				clipPaths: {}
+			}
+		});
+
 		return canvas;
 	}
 
-	function htmlParser(xmlString){
-		var parser = new DOMParser();
-		return parser.parseFromString(xmlString, "text/xml");
-	}
-
-	function drawSvg(svgEl){
-		canvasRenderer = CanvasRenderer.create({
-			canvas : canvas
-		});
-		context = canvasRenderer.context;
-		canvas.setAttribute("height", getAttr(svgEl, "height"));
-		canvas.setAttribute("width", getAttr(svgEl, "width"));
-
-		drawSvgElement(svgEl);
-	}
-
-	function drawSvgElement(svgEl, clip){
-		switch(svgEl.nodeName){
-      case "defs":
-        drawAtomic(drawDefs, svgEl);
+	function drawElement(element, scope) {
+		switch (element.nodeName) {
+			case "defs":
+			case "svg":
+			case "g":
+				drawAtomic(drawContainer, element, scope);
+				break;
 			case "#text":
 				break;
 			case "text":
-				drawAtomic(drawText, svgEl);
-				break;
-			case "svg":
-				drawAtomic(drawSvgNode, svgEl);
+				drawAtomic(drawText, element, scope);
 				break;
 			case "line":
-				drawAtomic(drawLine, svgEl);
+				drawAtomic(drawLine, element, scope);
 				break;
 			case "polygon":
-				drawAtomic(drawPolygon, svgEl);
+				drawAtomic(drawPolygon, element, scope)
 				break;
 			case "path":
-				drawAtomic(drawPath, svgEl);
+				drawAtomic(drawPath, element, scope);
 				break;
 			case "rect":
-				drawAtomic(drawRectangle, svgEl);
+				drawAtomic(drawRectangle, element, scope);
 				break;
 			case "circle":
-				drawAtomic(drawCircle, svgEl);
+				drawAtomic(drawCircle, element, scope);
 				break;
 			case "ellipse":
-				drawAtomic(drawEllipse, svgEl);
+				drawAtomic(drawEllipse, element, scope);
 				break;
 			case "clipPath":
-				assets = getClipPath(svgEl);
-				break;
-			case "g":
-				drawAtomic(drawG, svgEl);
+				const clipPath = getAsClipPath(element);
+				scope.defs.clipPaths[clipPath.id] = clipPath.elements;
 				break;
 			default:
-				console.error("No implementation for element: " + svgEl.nodeName)
+				console.error("No implementation for element: " + element.nodeName)
 		}
 	}
 
-	function drawSvgNode(svgEl){
-		for(var i = 0; i < svgEl.childNodes.length; i++){
-			var el = svgEl.childNodes[i];
-			drawSvgElement(el);
+	function drawAtomic(drawFunc, element, scope) {
+		const clipPath = getUrlAttr(element, "clip-path");
+		scope.context.save();
+		if (clipPath) {
+			clip(scope.defs.clipPaths[clipPath], scope);
 		}
+		drawFunc.call(this, element, scope);
+		scope.context.restore();
 	}
 
-	function drawAtomic(drawFunc){
-		context.save();
-		drawFunc.apply(this, Array.prototype.slice.call(arguments, 1));
-		context.restore();
+	function getAsClipPath(element) {
+		return {
+			id: element.id,
+			elements: element.childNodes
+		};
 	}
 
-	function drawText(svgEl){
-		var attrs = getMainAttrs(svgEl);
-		attrs.x = getAttr(svgEl, "x");
-		attrs.y = getAttr(svgEl, "y");
-		attrs.font = getFont(svgEl);
-
-		context.font = attrs.font;
-		context.fillText(svgEl.textContent, attrs.x, attrs.y);
-		if(attrs.stroke){
-			context.strokeText(svgEl.textContent, attrs.x, attrs.y);
+	function getAttrs(element, attributeNames = []) {
+		let attrs = {
+			stroke: getAttr(element, "stroke"),
+			strokeWidth: getAttr(element, "stroke-width"),
+			fill: getAttr(element, "fill"),
+			clipPath: getUrlAttr(element, "clip-path")
+		};
+		for (let attrName of attributeNames) {
+			attrs[attrName] = getAttr(element, attrName);
 		}
+		return attrs;
 	}
 
-	function getFont(svgEl){
-		var fontFamily = getAttr(svgEl, "font-family") || svgEl.style["font-family"] || "Times New Roman";
-		var fontSize = getAttr(svgEl, "font-size") || svgEl.style["font-size"] || "16px";
+	function getAttr(element, name) {
+		var attr = element.attributes[name]
+		if (attr) {
+			return attr.value;
+		}
+		if (element.style && element.style[name]) {
+			return element.style[name];
+		}
+		return null;
+	}
+
+	function getUrlAttr(element, name) {
+		var attr = getAttr(element, name);
+		if (attr) {
+			attr = attr.replace(/url\(/, "");
+			attr = attr.replace(")", "");
+			attr = attr.replace(/^#/, "");
+		}
+		return attr;
+	}
+
+	function getFont(element) {
+		const fontFamily = getAttr(element, "font-family") || element.style["font-family"] || "Times New Roman";
+		const fontSize = getAttr(element, "font-size") || element.style["font-size"] || "16px";
 		return fontSize + " " + fontFamily;
 	}
 
-	function drawLine(svgEl){
-		var attrs = getMainAttrs(svgEl);
-		attrs.x1 = getAttr(svgEl, "x1");
-		attrs.x2 = getAttr(svgEl, "x2");
-		attrs.y1 = getAttr(svgEl, "y1");
-		attrs.y2 = getAttr(svgEl, "y2");
-		attrs.clipPathUrl = getUrlAttr(svgEl, "clip-path");
-
-		setContextMainAttrs(attrs);
-
-		if(attrs.clipPathUrl){
-			clip(svgEl, clipPathUrl);
-		}
-
-		context.beginPath();
-		context.moveTo(attrs.x1, attrs.y1);
-		context.lineTo(attrs.x2, attrs.y2);
-
-		strokeAndFill(attrs);
+	function setContext(context, attrs) {
+		context.lineWidth = attrs.strokeWidth;
+		context.strokeStyle = attrs.stroke;
+		context.fillStyle = attrs.fill;
 	}
 
-	function drawPolygon(svgEl){
-		var X = 0;
-		var Y = 1;
-		var attrs = getMainAttrs(svgEl);
-		attrs.rawPoints = getAttr(svgEl, "points");
-		var points = parsePoints(attrs.rawPoints);
-
-		setContextMainAttrs(attrs);
-
-		context.beginPath();
-		context.moveTo(points[0][X], points[0][Y]);
-
-		for(var i = 1; i < points.length; i++){
-			context.lineTo(points[i][X], points[i][Y]);
-		}
-
-		context.closePath();
-
-		strokeAndFill(attrs);
+	function parseXml(xmlString) {
+		let parser = new DOMParser();
+		return parser.parseFromString(xmlString, "text/xml");
 	}
 
-	function parsePoints(pointsString){
+	function parsePoints(pointsString) {
 		var rawList = pointsString.split(" ");
 		var pointsList = [];
 
-		for(var i = 0; i < rawList.length; i++){
+		for (var i = 0; i < rawList.length; i++) {
 			var point = rawList[i].split(",");
 			pointsList.push(point);
 		}
@@ -159,152 +164,117 @@ const svgToCanvas = (function(){
 		return pointsList;
 	}
 
-	function drawPath(svgEl){
-		let instructionList = svgPathParser.parsePath(getAttr(svgEl, "d"));
-		instructionList = instructionSimplifier.simplifyInstructions(instructionList);
-		canvasRenderer.drawInstructionList(instructionList, {
-      strokeColor : getAttr(svgEl, "stroke"),
-      strokeWidth : getAttr(svgEl, "stroke-width"),
-      fillColor : getAttr(svgEl, "fill")
-    });
-	}
-
-	function drawG(svgEl){
-		for(var i = 0; i < svgEl.childNodes.length; i++){
-			var el = svgEl.childNodes[i];
-			drawSvgElement(el);
+	function strokeAndFill(attrs, scope) {
+		if (attrs.fill) {
+			scope.context.fill();
+		}
+		if (attrs.stroke) {
+			scope.context.stroke();
 		}
 	}
 
-  function drawDefs(svgEl){
-    for(var i = 0; i < svgEl.childNodes.length; i++){
-      var el = svgEl.childNodes[i];
-      drawSvgElement(el);
-    }
-  }
-
-	function drawRectangle(svgEl, clip){
-		var attrs = getMainAttrs(svgEl);
-		attrs.x = getAttr(svgEl, "x");
-		attrs.y = getAttr(svgEl, "y");
-		attrs.height = getAttr(svgEl, "height");
-		attrs.width = getAttr(svgEl, "width");
-    attrs.clipPathUrl = getUrlAttr(svgEl, "clip-path");
-
-		setContextMainAttrs(attrs);
-
-		context.rect(attrs.x, attrs.y, attrs.width, attrs.height);
-
-    if(attrs.clipPathUrl){
-			clip(svgEl, clipPathUrl);
+	function clip(clipPath, scope) {
+		scope.context.beginPath();
+		for (let element of clipPath) {
+			drawElement(element, scope);
 		}
+		scope.context.clip();
+	}
 
-		if(!clip){
-			strokeAndFill(attrs);
+	function drawContainer(element, scope) {
+		const attrs = getAttrs(element);
+		if (attrs.clipPath) {
+			clip(scope.defs.clipPaths[attrs.clipPath], scope);
+		}
+		for (var i = 0; i < element.childNodes.length; i++) {
+			var el = element.childNodes[i];
+			drawElement(el, scope);
 		}
 	}
 
-	function drawCircle(svgEl, clip){
-		var attrs = getMainAttrs(svgEl);
-		attrs.cx = getAttr(svgEl, "cx");
-		attrs.cy = getAttr(svgEl, "cy");
-		attrs.r = getAttr(svgEl, "r");
+	function drawRectangle(element, scope) {
+		const attrs = getAttrs(element, ["x", "y", "height", "width"]);
+		setContext(scope.context, attrs);
 
-		setContextMainAttrs(attrs);
-
-		context.beginPath();
-		context.arc(attrs.cx, attrs.cy, attrs.r, 0, Math.PI*2, true);
-		context.closePath();
-
-		strokeAndFill(attrs);
+		scope.context.rect(attrs.x, attrs.y, attrs.width, attrs.height);
+		strokeAndFill(attrs, scope);
 	}
 
-	function drawEllipse(svgEl){
-		var attrs = getMainAttrs(svgEl);
-		attrs.cx = getAttr(svgEl, "cx");
-		attrs.cy = getAttr(svgEl, "cy");
-		attrs.rx = getAttr(svgEl, "rx");
-		attrs.ry = getAttr(svgEl, "ry");
+	function drawPolygon(element, scope) {
+		const attrs = getAttrs(element, ["points"]);
+		const points = parsePoints(attrs.points);
+		setContext(scope.context, attrs);
 
-		setContextMainAttrs(attrs);
-		drawOval(attrs.cx, attrs.cy, attrs.rx, attrs.ry);
-		strokeAndFill(attrs);
-	}
+		scope.context.beginPath();
+		scope.context.moveTo(points[0][0], points[0][1]);
 
-	function drawOval(cx, cy, rx, ry){
-        context.beginPath();
-        context.translate(cx-rx, cy-ry);
-        context.scale(rx, ry);
-        context.arc(1, 1, 1, 0, 2 * Math.PI, false);
-	}
-
-	function getAttr(el, name){
-		var attr = el.attributes[name]
-		if(attr){
-			return attr.value;
+		for (let i = 1; i < points.length; i++) {
+			scope.context.lineTo(points[i][0], points[i][1]);
 		}
-		if(el.style && el.style[name]){
-			return el.style[name];
-		}
-		return null;
+
+		scope.context.closePath();
+		strokeAndFill(attrs, scope);
 	}
 
-	function getUrlAttr(el, name){
-		var attr = getAttr(el, name);
-		if(attr){
-			attr = attr.replace(/url\(/, "");
-			attr = attr.replace(")", "");
-		}
-		return attr;
+	function drawCircle(element, scope) {
+		const attrs = getAttrs(element, ["cx", "cy", "r"]);
+		setContext(scope.context, attrs);
+
+		scope.context.beginPath();
+		scope.context.arc(attrs.cx, attrs.cy, attrs.r, 0, Math.PI * 2, true);
+		scope.context.closePath();
+
+		strokeAndFill(attrs, scope);
 	}
 
-	function getClipPath(svgEl){
-		assets.clipPaths = assets.clipPaths || {};
-		assets.clipPaths[svgEl.id] = svgEl.childNodes;
-		return assets;
+	function drawEllipse(element, scope) {
+		const attrs = getAttrs(element, ["cx", "cy", "rx", "ry"]);
+		setContext(scope.context, attrs);
+		drawOval(attrs.cx, attrs.cy, attrs.rx, attrs.ry, scope);
+		strokeAndFill(attrs, scope);
 	}
 
-	function urlToId(url){
-		return url.substr(1);
+	function drawOval(cx, cy, rx, ry, scope) {
+		scope.context.beginPath();
+		scope.context.translate(cx - rx, cy - ry);
+		scope.context.scale(rx, ry);
+		scope.context.arc(1, 1, 1, 0, 2 * Math.PI, false);
 	}
 
-	function strokeAndFill(attrs){
-		if(attrs.fill){
-			context.fill();
-		}
-		if(attrs.stroke){
-			context.stroke();
+	function drawLine(element, scope) {
+		const attrs = getAttrs(element, ["x1", "x2", "y1", "y2"]);
+		setContext(scope.context, attrs);
+
+		scope.context.beginPath();
+		scope.context.moveTo(attrs.x1, attrs.y1);
+		scope.context.lineTo(attrs.x2, attrs.y2);
+
+		strokeAndFill(attrs, scope);
+	}
+
+	function drawText(element, scope) {
+		const attrs = getAttrs(elements, ["x", "y"]);
+		attrs.font = getFont(element);
+		scope.context.font = attrs.font;
+		scope.context.fillText(element.textContent, attrs.x, attrs.y);
+		if (attrs.stroke) {
+			context.strokeText(element.textContent, attrs.x, attrs.y);
 		}
 	}
 
-	function getMainAttrs(svgEl){
-		return {
-			stroke : getAttr(svgEl, "stroke"),
-			strokeWidth : getAttr(svgEl, "stroke-width"),
-			fill : getAttr(svgEl, "fill")
-		};
-	}
-
-	function setContextMainAttrs(attrs){
-		context.lineWidth = attrs.strokeWidth;
-		context.strokeStyle = attrs.stroke;
-		context.fillStyle = attrs.fill;
-	}
-
-	function clip(svgEl, clipPathUrl){
-		if(clipPathUrl){
-			var clipPathId = urlToId(clipPathUrl);
-			var clipAsset = assets.clipPaths[clipPathId];
-			context.beginPath();
-			for(var i = 0; i < clipAsset.length; i++){
-				drawSvgElement(clipAsset[i], clip);
-			}
-			context.clip();
-		}
+	function drawPath(element, scope) {
+		const attrs = getAttrs(element);
+		let instructionList = this.svgPathParser.parsePath(getAttr(svgEl, "d"));
+		instructionList = this.instructionSimplifier.simplifyInstructions(instructionList);
+		this.canvasRenderer.drawInstructionList(instructionList, {
+			strokeColor: attr.stroke,
+			strokeWidth: attr.strokeWidth,
+			fillColor: attr.fill
+		});
 	}
 
 	return {
-		svgToCanvas : svgToCanvas
-	}
+		create
+	};
 
 })();
