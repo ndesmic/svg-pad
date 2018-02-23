@@ -335,7 +335,9 @@ const SvgPad = (function(){
 	}
 
 	function openSettings(){
-		Lightbox.open("Some Text");
+    const settings = document.querySelector("#mod-settings");
+		settings.show();
+    document.querySelector("#mod-settings-close").addEventListener("click", () => setting.close());
 	}
 
 	function haltEvent(e){

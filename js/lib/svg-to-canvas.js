@@ -1,4 +1,4 @@
-var SvgToCanvas = (function() {
+var SvgToCanvas = (function () {
 
 	const defaults = {
 		canvas: null //required
@@ -15,18 +15,18 @@ var SvgToCanvas = (function() {
 	function bind(svgToCanvas) {
 		svgToCanvas.render = render.bind(svgToCanvas);
 		svgToCanvas.init = init.bind(svgToCanvas);
-    svgToCanvas.drawAtomic = drawAtomic.bind(svgToCanvas);
-    svgToCanvas.drawElement = drawElement.bind(svgToCanvas);
-    svgToCanvas.drawContainer = drawContainer.bind(svgToCanvas);
-    svgToCanvas.drawPath = drawPath.bind(svgToCanvas);
-    svgToCanvas.drawText = drawText.bind(svgToCanvas);
-    svgToCanvas.drawLine = drawLine.bind(svgToCanvas);
-    svgToCanvas.drawRectangle = drawRectangle.bind(svgToCanvas);
-    svgToCanvas.drawPolygon = drawPolygon.bind(svgToCanvas);
-    svgToCanvas.drawEllipse = drawEllipse.bind(svgToCanvas);
-    svgToCanvas.drawCircle = drawCircle.bind(svgToCanvas);
-    svgToCanvas.drawOval = drawOval.bind(svgToCanvas);
-    svgToCanvas.clip = clip.bind(svgToCanvas);
+		svgToCanvas.drawAtomic = drawAtomic.bind(svgToCanvas);
+		svgToCanvas.drawElement = drawElement.bind(svgToCanvas);
+		svgToCanvas.drawContainer = drawContainer.bind(svgToCanvas);
+		svgToCanvas.drawPath = drawPath.bind(svgToCanvas);
+		svgToCanvas.drawText = drawText.bind(svgToCanvas);
+		svgToCanvas.drawLine = drawLine.bind(svgToCanvas);
+		svgToCanvas.drawRectangle = drawRectangle.bind(svgToCanvas);
+		svgToCanvas.drawPolygon = drawPolygon.bind(svgToCanvas);
+		svgToCanvas.drawEllipse = drawEllipse.bind(svgToCanvas);
+		svgToCanvas.drawCircle = drawCircle.bind(svgToCanvas);
+		svgToCanvas.drawOval = drawOval.bind(svgToCanvas);
+		svgToCanvas.clip = clip.bind(svgToCanvas);
 	}
 
 	function init() {
@@ -127,7 +127,7 @@ var SvgToCanvas = (function() {
 	}
 
 	function getAttr(element, name) {
-		var attr = element.attributes[name]
+		const attr = element.attributes[name]
 		if (attr) {
 			return attr.value;
 		}
@@ -281,7 +281,7 @@ var SvgToCanvas = (function() {
 		this.canvasRenderer.drawInstructionList(instructionList, {
 			strokeColor: attrs.stroke,
 			strokeWidth: attrs.strokeWidth,
-			fillColor: attrs.fill
+			fillColor: attrs.fill || "#000"
 		});
 	}
 
