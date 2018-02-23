@@ -72,6 +72,9 @@ var SvgToCanvas = (function () {
 			case "line":
 				this.drawAtomic(drawLine, element, scope);
 				break;
+			case "polyline":
+				this.drawAtomic(drawPolyline, element, scope);
+				break;
 			case "polygon":
 				this.drawAtomic(drawPolygon, element, scope)
 				break;
@@ -150,6 +153,9 @@ var SvgToCanvas = (function () {
 	function getFont(element) {
 		const fontFamily = getAttr(element, "font-family") || element.style["font-family"] || "Times New Roman";
 		const fontSize = getAttr(element, "font-size") || element.style["font-size"] || "16px";
+		if (!isNaN(fontSize)) {
+			fontSize = fontSize + "px";
+		}
 		return fontSize + " " + fontFamily;
 	}
 
@@ -212,6 +218,21 @@ var SvgToCanvas = (function () {
 		strokeAndFill(attrs, scope);
 	}
 
+	function drawPolyline(element, scope) {
+		const attrs = getAttrs(element, ["points"]);
+		const points = parsePoints(attrs.points);
+		setContext(scope.context, attrs);
+
+		scope.context.beginPath();
+		scope.context.moveTo(points[0][0], points[0][1]);
+
+		for (let i = 1; i < points.length; i++) {
+			scope.context.lineTo(points[i][0], points[i][1]);
+		}
+
+		scope.context.stroke();
+	}
+
 	function drawPolygon(element, scope) {
 		const attrs = getAttrs(element, ["points"]);
 		const points = parsePoints(attrs.points);
@@ -265,12 +286,28 @@ var SvgToCanvas = (function () {
 	}
 
 	function drawText(element, scope) {
-		const attrs = getAttrs(elements, ["x", "y"]);
+		const attrs = getAttrs(element, ["x", "y", "text-anchor"]);
 		attrs.font = getFont(element);
 		scope.context.font = attrs.font;
-		scope.context.fillText(element.textContent, attrs.x, attrs.y);
+
+		const textContent = element.textContent;
+		const width = scope.context.measureText(textContent).width;
+		const transformedAttrs = normalizeTextCoordinates(attrs, width);
+
+		scope.context.fillText(textContent, transformedAttrs.x, transformedAttrs.y);
 		if (attrs.stroke) {
-			context.strokeText(element.textContent, attrs.x, attrs.y);
+			context.strokeText(textContent, transformedAttrs.x, transformedAttrs.y);
+		}
+	}
+
+	function normalizeTextCoordinates(attrs, width){
+		switch(attrs["text-anchor"]){
+			case "middle" :
+				return { ...attrs, ...{ x: (parseFloat(attrs.x) - width/2) } };
+			case "end" : 
+				return { ...attrs, ...{ x: (parseFloat(attrs.x) - width) } };
+			default:
+				return attrs;
 		}
 	}
 
