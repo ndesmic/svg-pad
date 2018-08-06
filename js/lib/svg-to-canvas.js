@@ -140,7 +140,7 @@ export const SvgToCanvas = (function () {
 	}
 
 	function getAttr(element, name) {
-		var attr = element.attributes[name]
+		const attr = element.attributes[name]
 		if (attr) {
 			return attr.value;
 		}
@@ -316,7 +316,7 @@ export const SvgToCanvas = (function () {
 		this.canvasRenderer.drawInstructionList(instructionList, {
 			strokeColor: attrs.stroke,
 			strokeWidth: attrs.strokeWidth,
-			fillColor: attrs.fill
+			fillColor: attrs.fill || "#000"
 		});
 	}
 

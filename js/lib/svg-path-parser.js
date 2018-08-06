@@ -1,119 +1,75 @@
-const SvgPathParser = (function(){
+const SvgPathParser = (function () {
 
 	const defaults = {
-		canvas : null
+		canvas: null
 	};
 
 	const controlChars = {
-		"M" : "moveAbsolute",
-		"m" : "moveRelative",
-		"L" : "lineAbsolute",
-		"l" : "lineRelative",
-		"H" : "horizontalLineAbsolute",
-		"h" : "horizontalLineRelative",
-		"V" : "verticalLineAbsolute",
-		"v" : "verticalLineRelative",
-		"C" : "cubicCurveAbsolute",
-		"c" : "cubicCurveRelative",
-		"Z" : "closePath",
-		"z" : "closePath",
-		"S" : "curveSmoothAbsolute",
-		"s" : "curveSmoothRelative",
-		"Q" : "quadraticAbsolute",
-		"q" : "quadraticRelative",
-		"T" : "quadraticSmoothAbsolute",
-		"t" : "quadraticSmoothRelative",
-		"A" : "arcAbsolute",
-		"a" : "arcRelative"
+		"M": "moveAbsolute",
+		"m": "moveRelative",
+		"L": "lineAbsolute",
+		"l": "lineRelative",
+		"H": "horizontalLineAbsolute",
+		"h": "horizontalLineRelative",
+		"V": "verticalLineAbsolute",
+		"v": "verticalLineRelative",
+		"C": "cubicCurveAbsolute",
+		"c": "cubicCurveRelative",
+		"Z": "closePath",
+		"z": "closePath",
+		"S": "curveSmoothAbsolute",
+		"s": "curveSmoothRelative",
+		"Q": "quadraticAbsolute",
+		"q": "quadraticRelative",
+		"T": "quadraticSmoothAbsolute",
+		"t": "quadraticSmoothRelative",
+		"A": "arcAbsolute",
+		"a": "arcRelative"
 	};
 
-	function create(options){
+	function create(options) {
 		let svgPath = {};
 		svgPath.options = Object.assign({}, defaults, options);
 		bind(svgPath);
 		return svgPath;
 	}
 
-	function bind(svgPath){
-		svgPath.parsePath = parsePath.bind(svgPath);
+	function bind(svgPathParser) {
+		svgPathParser.parsePath = parsePath.bind(svgPathParser);
+		svgPathParser.tokenizePath = tokenizePath.bind(svgPathParser);
 	}
 
-	function parsePath(pathData){
-		let pathDataParts = splitWhitespace(pathData);
-		let pathInstructions = [];
-		let partIndex = 0;
+	function tokenizePath(pathData){
+		return pathData.match(/[a-zA-Z]+|[0-9|\.|-]+/g);
+	}
 
-		while(partIndex < pathDataParts.length){
-			let pathPart = pathDataParts[partIndex].trim();
+	function parsePath(pathData) {
+		const tokens = this.tokenizePath(pathData);
+		const instructions = [];
+		let i = 0;
 
-			if(partContainsControlChar(pathPart)){
-				let instruction = {
-				      type : controlChars[pathPart.charAt(0)],
-				      points : []
-        };
-				if(pathPart.length > 1){
-					instruction.points = pathPart.substr(1).split(",").map(x => parseFloat(x)).filter(x => !isNaN(x));
+		while(i < tokens.length){
+			const currentToken = tokens[i];
+
+			if(isControlChar(tokens[i])){
+				const points = [];
+				let offset = 1;
+				while(i + offset < tokens.length && !isControlChar(tokens[i + offset])){
+					points.push(parseFloat(tokens[i + offset]));
+					offset++;
 				}
-				while(partIndex + 1 < pathDataParts.length && !partContainsControlChar(pathDataParts[partIndex + 1])){
-					partIndex++;
-					pathPart = pathDataParts[partIndex];
-					instruction.points.push(pathPart);
-				}
-				pathInstructions.push(instruction);
-			}else{
-				console.log("unexpected part:", pathPart)
+				instructions.push({ type: controlChars[currentToken], points });
+				i += offset;
+			} else {
+				i++;
 			}
-			partIndex++;
 		}
 
-		return pathInstructions;
-	}
-	function isWhitespace(char){
-  		const whitespace = [
-			String.fromCharCode(13), //carriage return
-			String.fromCharCode(10), //new line
-			String.fromCharCode(32), //space
-			String.fromCharCode(9)   //tab
-  		];
-  		return whitespace.indexOf(char) != -1;
-	}
-	function splitWhitespace(text){
-		let split = [];
-		let buffer = "";
-		let quoted = false;
-		let readWhitespace = false;
-
-    text = text.trim();
-		for(let i = 0; i < text.length; i++){
-			if(isWhitespace(text[i]) && !quoted && !readWhitespace){
-				split.push(buffer);
-				buffer = "";
-				readWhitespace = true;
-			}else if(isWhitespace(text[i]) && !quoted && readWhitespace){
-		  		continue;
-			}else if(text[i] == "\"" && !quoted){
-		  		quoted = true;
-		  		readWhitespace = false;
-			}else if(text[i] == "\"" && quoted){
-		  		quoted = false;
-		  		readWhitespace = false;
-			}else{
-		  		buffer += text[i];
-		  		readWhitespace = false;
-			}
-	  }
-	  if(buffer){
-		  split.push(buffer);
-	  }
-
-	  return split;
+		return instructions;
 	}
 
-	function isControlChar(char){
-		return Object.keys(controlChars).indexOf(char) != -1;
-	}
-	function partContainsControlChar(part){
-		return isControlChar(part.charAt(0));
+	function isControlChar(char){	
+		return Object.keys(controlChars).includes(char);
 	}
 
 	return {

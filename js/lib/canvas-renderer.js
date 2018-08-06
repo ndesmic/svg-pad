@@ -1,4 +1,4 @@
-const CanvasRenderer = (function() {
+const CanvasRenderer = (function () {
 
     const defaults = {
         canvas: null
@@ -45,10 +45,12 @@ const CanvasRenderer = (function() {
         for (var i = 0; i < pathInstructions.length; i++) {
             this.drawInstruction(pathInstructions[i]);
         }
-        if(options.fillColor){
-          this.context.fill();
+        if (options.fillColor) {
+            this.context.fill();
         }
-        this.context.stroke();
+        if (options.stroke) {
+            this.context.stroke();
+        }
     }
 
     function drawInstruction(instruction, options) {
@@ -63,36 +65,48 @@ const CanvasRenderer = (function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    function setupStroke(options){
-      options = Object.assign({}, {
-        strokeColor : "#000",
-        strokeWidth : 1,
-        fillColor : null
-      }, options);
-      this.context.strokeStyle = options.strokeColor;
-      this.context.lineWidth = options.strokeWidth;
-      this.context.fillStyle = options.fillColor;
+    function setupStroke(options) {
+        options = Object.assign({}, {
+            strokeColor: "#000",
+            strokeWidth: 1,
+            fillColor: null
+        }, options);
+        this.context.strokeStyle = options.strokeColor;
+        this.context.lineWidth = options.strokeWidth;
+        this.context.fillStyle = options.fillColor;
     }
 
     function moveAbsolute(x, y) {
         this.context.moveTo(x, y);
-        this.currentPoint = { x, y };
+        this.currentPoint = {
+            x,
+            y
+        };
     }
 
     function lineAbsolute(x, y) {
         this.context.lineTo(x, y);
-        this.currentPoint = { x, y };
+        this.currentPoint = {
+            x,
+            y
+        };
     }
 
     function cubicCurveAbsolute(controlStartX, controlStartY1, controlEndX, controlEndY, x, y) {
         this.context.bezierCurveTo(controlStartX, controlStartY1, controlEndX, controlEndY, x, y);
-        this.currentPoint = { x, y };
+        this.currentPoint = {
+            x,
+            y
+        };
     }
 
     function init() {
         this.canvas = this.options.canvas || document.createElement("canvas");
         this.context = this.canvas.getContext("2d");
-        this.currentPoint = { x: 0, y: 0 };
+        this.currentPoint = {
+            x: 0,
+            y: 0
+        };
     }
 
     return {
