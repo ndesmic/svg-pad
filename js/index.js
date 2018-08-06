@@ -1,3 +1,5 @@
+import { SvgPad } from "./views/svg-pad-app.js";
+
 const loc = window.location.href;
 if (loc.indexOf('http://') == 0 && loc.indexOf("localhost") == -1){
     window.location.href = loc.replace("http://","https://");

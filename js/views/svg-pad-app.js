@@ -1,6 +1,7 @@
-"use strict";
+import { createDocument, download, normalizeFileName } from "../lib/utilities.js";
+import { SvgToCanvas } from "../lib/svg-to-canvas.js";
 
-const SvgPad = (function(){
+export const SvgPad = (function(){
 
 	const defaults = {
  		defaultSvg : PrettyPrint.prettyPrintXml('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="100" width="100">\n\r</svg>'),
@@ -197,7 +198,7 @@ const SvgPad = (function(){
 
 		this.svgUrl = window.URL.createObjectURL(this.svgBlob);
 		this.cssUrl = window.URL.createObjectURL(this.cssBlob);
-		var doc = util.createDocument(this.cssUrl, this.svgData);
+		var doc = createDocument(this.cssUrl, this.svgData);
 		var docBlob = new Blob([doc], { type : "text/html" });
 		this.docUrl = window.URL.createObjectURL(docBlob);
 
@@ -221,7 +222,7 @@ const SvgPad = (function(){
 	function exportImageDownload(){
 		let canvas = SvgToCanvas.create().render(this.subviews.svgEditor.getValue());
 		var exportUrl = canvas.toDataURL("image/png");
-		util.download(exportUrl, "image.png");
+		download(exportUrl, "image.png");
 	}
 
 	function exportImageWindow(e){
@@ -233,7 +234,7 @@ const SvgPad = (function(){
 
 	function prettyPrintSvg(){
 		var value = this.subviews.svgEditor.getValue();
-		this.subviews.svgEditor.setValue(prettyPrint.prettyPrintXML(value));
+		this.subviews.svgEditor.setValue(PrettyPrint.prettyPrintXml(value));
 	}
 
 	function changeBackgroundColor(){
@@ -250,7 +251,7 @@ const SvgPad = (function(){
 		}
 		let fileName = prompt("Please enter a name.");
 		if(fileName){
-			fileName = util.normalizeFileName(fileName);
+			fileName = normalizeFileName(fileName);
 			this.options.dropbox.upload(this.svgBlob, {
 				path : fileName
 			})

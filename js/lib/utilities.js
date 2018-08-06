@@ -1,17 +1,16 @@
-var util = (function(){
-	function stringEndsWith(str, suffix) {
-		return str.indexOf(suffix, str.length - suffix.length) !== -1;
-	}
+export function stringEndsWith(str, suffix) {
+	return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
 
-	function download(url, fileName){
-		var link = document.createElement("a");
-		link.href = url;
-		link.download = fileName;
-		link.click();
-	}
+export function download(url, fileName){
+	const link = document.createElement("a");
+	link.href = url;
+	link.download = fileName;
+	link.click();
+}
 
-	function createDocument(cssUrl, svg){
-		var doc = `
+export function createDocument(cssUrl, svg){
+	return `
 		<!doctype html>
 		<html>
 			<head>
@@ -22,22 +21,32 @@ var util = (function(){
 			${svg}
 			</body>
 		</html>`;
-		return doc;
-	}
+}
 
-	function normalizeFileName(fileName){
-		fileName = fileName || "new_svg.svg";
-		var dotSplit = fileName.split(".");
-		if(dotSplit.length == 0 || dotSplit[dotSplit.length - 1] != "svg"){
-			fileName += ".svg";
+export function normalizeFileName(fileName){
+	fileName = fileName || "new_svg.svg";
+	const dotSplit = fileName.split(".");
+	if(dotSplit.length == 0 || dotSplit[dotSplit.length - 1] != "svg"){
+		fileName += ".svg";
+	}
+	return fileName;
+}
+
+export function arrayTakeBy(array, count){
+	const result = [];
+	for(let i = 0; i < array.length; i += count){
+		const tuple = [];
+		for(let j = 0; j < count; j++){
+			tuple.push(array[i + j]);
 		}
-		return fileName;
+		result.push(tuple);
 	}
 
-	return {
-		stringEndsWith : stringEndsWith,
-		download : download,
-		createDocument: createDocument,
-		normalizeFileName : normalizeFileName
-	};
-})();
+	return result;
+}
+
+export function parseSvgPoints(pointsString) {
+	return arrayTakeBy(pointsString.split(/[,\s]/)
+		.map(term => term.trim())
+		.filter(term => term != ""), 2);
+}

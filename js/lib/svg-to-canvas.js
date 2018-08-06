@@ -1,4 +1,6 @@
-var SvgToCanvas = (function () {
+import { parseSvgPoints } from "./utilities.js";
+
+export const SvgToCanvas = (function () {
 
 	const defaults = {
 		canvas: null //required
@@ -43,8 +45,8 @@ var SvgToCanvas = (function () {
 		const svgElement = svgDoc.childNodes[0];
 		const context = this.canvasRenderer.context;
 		const canvas = context.canvas;
-		canvas.setAttribute("height", getAttr(svgElement, "height"));
-		canvas.setAttribute("width", getAttr(svgElement, "width"));
+
+		setCanvasAttributes(canvas, svgElement);
 
 		this.drawElement(svgElement, {
 			document: svgDoc,
@@ -57,14 +59,19 @@ var SvgToCanvas = (function () {
 		return canvas;
 	}
 
+	function setCanvasAttributes(canvas, svgElement){
+		const height = getAttr(svgElement, "height") || 2000;
+		const width = getAttr(svgElement, "width") || 2000;
+		canvas.setAttribute("height", height);
+		canvas.setAttribute("width", width);
+	}
+
 	function drawElement(element, scope) {
 		switch (element.nodeName) {
 			case "defs":
 			case "svg":
 			case "g":
 				this.drawAtomic(this.drawContainer, element, scope);
-				break;
-			case "#text":
 				break;
 			case "text":
 				this.drawAtomic(drawText, element, scope);
@@ -94,6 +101,9 @@ var SvgToCanvas = (function () {
 				const clipPath = getAsClipPath(element);
 				scope.defs.clipPaths[clipPath.id] = clipPath.elements;
 				break;
+			case "title":
+			case "#text":
+				return; //no-op, non-visual content
 			default:
 				console.error("No implementation for element: " + element.nodeName)
 		}
@@ -170,18 +180,6 @@ var SvgToCanvas = (function () {
 		return parser.parseFromString(xmlString, "text/xml");
 	}
 
-	function parsePoints(pointsString) {
-		var rawList = pointsString.split(" ");
-		var pointsList = [];
-
-		for (var i = 0; i < rawList.length; i++) {
-			var point = rawList[i].split(",");
-			pointsList.push(point);
-		}
-
-		return pointsList;
-	}
-
 	function strokeAndFill(attrs, scope) {
 		if (attrs.fill) {
 			scope.context.fill();
@@ -220,7 +218,7 @@ var SvgToCanvas = (function () {
 
 	function drawPolyline(element, scope) {
 		const attrs = getAttrs(element, ["points"]);
-		const points = parsePoints(attrs.points);
+		const points = parseSvgPoints(attrs.points);
 		setContext(scope.context, attrs);
 
 		scope.context.beginPath();
@@ -235,7 +233,7 @@ var SvgToCanvas = (function () {
 
 	function drawPolygon(element, scope) {
 		const attrs = getAttrs(element, ["points"]);
-		const points = parsePoints(attrs.points);
+		const points = parseSvgPoints(attrs.points);
 		setContext(scope.context, attrs);
 
 		scope.context.beginPath();
