@@ -1,0 +1,24 @@
+{
+  "name": "svg-pad",
+  "version": "1.0.0",
+  "description": "https://somnid.github.io/svg-pad/",
+  "main": "service-worker.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx http-server . -c-1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Somnid/svg-pad.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Somnid/svg-pad/issues"
+  },
+  "homepage": "https://github.com/Somnid/svg-pad#readme"
+}

@@ -1,61 +1,67 @@
 <!doctype html>
 <html>
-	<head>
-		<title>SVG Pad</title>
-		<link rel="stylesheet" href="css/index.css"></link>
-		<link rel="stylesheet" href="css/codemirror.css"></link>
-		<link rel="manifest" href="manifest.json">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-	</head>
-	<body>
-		<nav>
-			<a id="btn-save" download="image.svg" title="save"></a>
-			<a id="btn-export" title="export"></a>
-			<a id="btn-export-preview" title="export preview"></a>
-			<a id="btn-line" title="line"></a>
-			<a id="btn-rect" title="rectangle"></a>
-			<a id="btn-circle" title="circle"></a>
-			<a id="btn-ellipse" title="ellipse"></a>
-			<a id="btn-triangle" title="triangle"></a>
-			<a id="btn-path" title="path"></a>
-			<a id="btn-text" title="text"></a>
-			<a id="btn-pretty-print" title="pretty print"></a>
-			<a id="btn-background-color" title="background"></a>
-			<a id="btn-settings" title="settings">Settings</a>
-			<a id="btn-dropbox" title="save to dropbox"></a>
-		</nav>
-		<div id="main">
-			<div id="edit-panel" class="tab-control">
-				<div class="tab-contents">
-					<div id="svg-editor" class="editor tab-content" data-tab="svg"></div>
-					<div id="css-editor" class="editor tab-content" data-tab="css"></div>
-				</div>
-				<div class="tabs">
-					<a class="tab selected" data-tab="svg" id="mode-svg">SVG</a>
-					<a class="tab" data-tab="css" id="mode-css">CSS</a>
-				</div>
+
+<head>
+	<title>SVG Pad</title>
+	<link rel="stylesheet" href="css/index.css">
+	</link>
+	<link rel="stylesheet" href="css/codemirror.css">
+	</link>
+	<link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+	<nav>
+		<button id="btn-load" title="load">Load</button>
+		<button id="btn-save" title="save"></button>
+		<a id="btn-download" download="image.svg" title="download">Download</a>
+		<button id="btn-export" title="export"></button>
+		<button id="btn-export-preview" title="export preview"></button>
+		<button id="btn-line" title="line"></button>
+		<button id="btn-rect" title="rectangle"></button>
+		<button id="btn-circle" title="circle"></button>
+		<button id="btn-ellipse" title="ellipse"></button>
+		<button id="btn-triangle" title="triangle"></button>
+		<button id="btn-path" title="path"></button>
+		<button id="btn-text" title="text"></button>
+		<button id="btn-pretty-print" title="pretty print"></button>
+		<button id="btn-background-color" title="background"></button>
+		<button id="btn-settings" title="settings">Settings</button>
+		<button id="btn-dropbox" title="save to dropbox"></button>
+	</nav>
+	<div id="main">
+		<div id="edit-panel" class="tab-control">
+			<div class="tab-contents">
+				<div id="svg-editor" class="editor tab-content" data-tab="svg"></div>
+				<div id="css-editor" class="editor tab-content" data-tab="css"></div>
 			</div>
-			<div id="output">
-				<iframe seamless id="preview"></iframe>
-				<div id="export"></div>
+			<div class="tabs">
+				<a class="tab selected" data-tab="svg" id="mode-svg">SVG</a>
+				<a class="tab" data-tab="css" id="mode-css">CSS</a>
 			</div>
 		</div>
-    <dialog id="mod-settings">
-      Settings
-    </dialog>
-		<script src="js/lib/dropbox.js"></script>
-		<script src="js/lib/code-mirror.js"></script>
-		<script src="js/lib/keyboard.js"></script>
-		<script src="js/lib/svg-path-parser.js"></script>
-		<script src="js/lib/instruction-simplifier.js"></script>
-		<script src="js/lib/canvas-renderer.js"></script>
-		<script src="js/lib/utilities.js" type="module"></script>
-		<script src="js/lib/svg-to-canvas.js" type="module"></script>
-		<script src="js/lib/pretty-print.js"></script>
-		<script src="js/lib/dom-tools.js"></script>
-		<script src="js/lib/lightbox.js"></script>
-		<script src="js/lib/tabs.js"></script>
-		<script src="js/views/svg-pad-app.js" type="module"></script>
-		<script src="js/index.js" type="module"></script>
-	</body>
+		<div id="output">
+			<iframe seamless id="preview"></iframe>
+			<div id="export"></div>
+		</div>
+	</div>
+	<dialog id="mod-settings">
+		Settings
+	</dialog>
+	<script src="js/lib/dropbox.js"></script>
+	<script src="js/lib/code-mirror.js"></script>
+	<script src="js/lib/keyboard.js"></script>
+	<script src="js/lib/svg-path-parser.js"></script>
+	<script src="js/lib/instruction-simplifier.js"></script>
+	<script src="js/lib/canvas-renderer.js"></script>
+	<script src="js/lib/utilities.js" type="module"></script>
+	<script src="js/lib/svg-to-canvas.js" type="module"></script>
+	<script src="js/lib/pretty-print.js"></script>
+	<script src="js/lib/dom-tools.js"></script>
+	<script src="js/lib/lightbox.js"></script>
+	<script src="js/lib/tabs.js"></script>
+	<script src="js/views/svg-pad-app.js" type="module"></script>
+	<script src="js/index.js" type="module"></script>
+</body>
+
 </html>

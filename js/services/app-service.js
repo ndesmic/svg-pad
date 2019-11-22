@@ -7,7 +7,7 @@ const AppService = (function(){
 
 	function create(options){
 		let appService = {};
-		appService.options = Object.assign({}, defaults, options);
+		appService.options = { ...defaults, ...options };
 		bind(appService);
 		appService.init();
 		return appService;

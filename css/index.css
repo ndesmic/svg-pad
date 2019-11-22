@@ -7,16 +7,16 @@ ul, li { list-style: none; }
 html { height: 100%; }
 body { height: 100%; font-family: "arial"; padding: 0px; margin: 0px; }
 nav {
-	height: 30px;
-	-webkit-user-select: none;
+	height: 2rem;
+	user-select: none;
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: flex-start;
 	align-items: center;
 }
 footer { height: 30px; }
+button,
 a { border: 1px solid grey; margin: 0px 5px 0px 0px; color: #000; text-decoration: none; padding: 3px; cursor: pointer; -moz-box-sizing: border-box; box-sizing: border-box; }
-
 
 #main {
 	display: flex;
@@ -29,7 +29,7 @@ a { border: 1px solid grey; margin: 0px 5px 0px 0px; color: #000; text-decoratio
 	width: 50%;
 }
 #edit-panel .tab-contents {
-	height: calc(100% - 30px);
+	height: calc(100% - 2rem);
 }
 #edit-panel .tab-content{
 	z-index: 0;
@@ -128,7 +128,8 @@ a { border: 1px solid grey; margin: 0px 5px 0px 0px; color: #000; text-decoratio
 #workspace.file-error { border: 3px solid red; }
 */
 
-nav a { display: inline-block; padding: 0px; height: 25px; width: 25px; overflow: hidden; vertical-align: top;}
+nav button,
+nav a { display: block; padding: 0px; height: 2rem; width: 2rem; overflow: hidden; background-color: white; }
 #btn-save { background: url(../svg/disk.svg) no-repeat center center; }
 #btn-export { background: url(../svg/export.svg) no-repeat center center; }
 #btn-export-preview { background: url(../svg/export-preview.svg) no-repeat center center; }
@@ -141,7 +142,6 @@ nav a { display: inline-block; padding: 0px; height: 25px; width: 25px; overflow
 #btn-text{ background: url(../svg/text.svg) no-repeat 0px 3px; }
 #btn-pretty-print { background: url(../svg/bracket.svg) no-repeat center center; }
 #btn-background-color { background: url(../svg/background.svg) no-repeat center center; }
-#btn-settings {}
 #btn-dropbox { background: url(../svg/d-box.svg) no-repeat center center; }
 
 .tabs {
