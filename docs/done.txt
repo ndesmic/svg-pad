@@ -1,4 +1,0 @@
--SVG Rasterization (Partial)
--Save Settings on Setting Change
-	-Canvas Color
--Open SVG/CSS from drag

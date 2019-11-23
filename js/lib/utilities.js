@@ -50,3 +50,8 @@ export function parseSvgPoints(pointsString) {
 		.map(term => term.trim())
 		.filter(term => term != ""), 2);
 }
+
+const domParser = new DOMParser();
+export function parseXml(xmlString) {
+	return domParser.parseFromString(xmlString, "text/xml");
+}

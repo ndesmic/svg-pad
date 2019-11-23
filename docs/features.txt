@@ -1,0 +1,9 @@
+-Open
+	- SVG from drag
+	- CSS from drag
+	- SVG from file
+-Save
+	- SVG to file
+	- SVG download
+	- PNG download
+-SVG Rasterization (Partial)

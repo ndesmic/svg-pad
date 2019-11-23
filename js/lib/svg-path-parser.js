@@ -1,49 +1,42 @@
-const SvgPathParser = (function () {
+const controlChars = {
+	"M": "moveAbsolute",
+	"m": "moveRelative",
+	"L": "lineAbsolute",
+	"l": "lineRelative",
+	"H": "horizontalLineAbsolute",
+	"h": "horizontalLineRelative",
+	"V": "verticalLineAbsolute",
+	"v": "verticalLineRelative",
+	"C": "cubicCurveAbsolute",
+	"c": "cubicCurveRelative",
+	"Z": "closePath",
+	"z": "closePath",
+	"S": "curveSmoothAbsolute",
+	"s": "curveSmoothRelative",
+	"Q": "quadraticAbsolute",
+	"q": "quadraticRelative",
+	"T": "quadraticSmoothAbsolute",
+	"t": "quadraticSmoothRelative",
+	"A": "arcAbsolute",
+	"a": "arcRelative"
+};
 
-	const defaults = {
-		canvas: null
-	};
+export class SvgPathParser {
 
-	const controlChars = {
-		"M": "moveAbsolute",
-		"m": "moveRelative",
-		"L": "lineAbsolute",
-		"l": "lineRelative",
-		"H": "horizontalLineAbsolute",
-		"h": "horizontalLineRelative",
-		"V": "verticalLineAbsolute",
-		"v": "verticalLineRelative",
-		"C": "cubicCurveAbsolute",
-		"c": "cubicCurveRelative",
-		"Z": "closePath",
-		"z": "closePath",
-		"S": "curveSmoothAbsolute",
-		"s": "curveSmoothRelative",
-		"Q": "quadraticAbsolute",
-		"q": "quadraticRelative",
-		"T": "quadraticSmoothAbsolute",
-		"t": "quadraticSmoothRelative",
-		"A": "arcAbsolute",
-		"a": "arcRelative"
-	};
-
-	function create(options) {
-		let svgPath = {};
-		svgPath.options = Object.assign({}, defaults, options);
-		bind(svgPath);
-		return svgPath;
+	constructor() {
+		this.bind(this);
 	}
 
-	function bind(svgPathParser) {
-		svgPathParser.parsePath = parsePath.bind(svgPathParser);
-		svgPathParser.tokenizePath = tokenizePath.bind(svgPathParser);
+	bind(svgPathParser) {
+		svgPathParser.parsePath = this.parsePath.bind(svgPathParser);
+		svgPathParser.tokenizePath = this.tokenizePath.bind(svgPathParser);
 	}
 
-	function tokenizePath(pathData){
+	tokenizePath(pathData){
 		return pathData.match(/[a-zA-Z]+|[0-9|\.|-]+/g);
 	}
 
-	function parsePath(pathData) {
+	parsePath(pathData) {
 		const tokens = this.tokenizePath(pathData);
 		const instructions = [];
 		let i = 0;
@@ -68,12 +61,7 @@ const SvgPathParser = (function () {
 		return instructions;
 	}
 
-	function isControlChar(char){	
+	isControlChar(char){	
 		return Object.keys(controlChars).includes(char);
 	}
-
-	return {
-		create
-	};
-
-})();
+}

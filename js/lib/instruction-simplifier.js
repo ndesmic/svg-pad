@@ -1,29 +1,24 @@
-var InstructionSimplifier = (function() {
-
-    function create() {
-        var instructionSimplifier = {};
-        bind(instructionSimplifier);
-        instructionSimplifier.init();
-        return instructionSimplifier;
+export class InstructionSimplifier {
+    constructor() {
+        this.bind(this);
     }
 
-    function bind(instructionSimplifier) {
-        instructionSimplifier.init = init.bind(instructionSimplifier);
-        instructionSimplifier.simplifyInstructions = simplifyInstructions.bind(instructionSimplifier);
-        instructionSimplifier.simplifyInstruction = simplifyInstruction.bind(instructionSimplifier);
-        instructionSimplifier.moveAbsolute = moveAbsolute.bind(instructionSimplifier);
-        instructionSimplifier.moveRelative = moveRelative.bind(instructionSimplifier);
-        instructionSimplifier.lineAbsolute = lineAbsolute.bind(instructionSimplifier);
-        instructionSimplifier.lineRelative = lineRelative.bind(instructionSimplifier);
-        instructionSimplifier.horizontalLineAbsolute = horizontalLineAbsolute.bind(instructionSimplifier);
-        instructionSimplifier.horizontalLineRelative = horizontalLineRelative.bind(instructionSimplifier);
-        instructionSimplifier.verticalLineAbsolute = verticalLineAbsolute.bind(instructionSimplifier);
-        instructionSimplifier.verticalLineRelative = verticalLineRelative.bind(instructionSimplifier);
-        instructionSimplifier.cubicCurveAbsolute = cubicCurveAbsolute.bind(instructionSimplifier);
-        instructionSimplifier.cubicCurveRelative = cubicCurveRelative.bind(instructionSimplifier);
+    bind(instructionSimplifier) {
+        instructionSimplifier.simplifyInstructions = this.simplifyInstructions.bind(instructionSimplifier);
+        instructionSimplifier.simplifyInstruction = this.simplifyInstruction.bind(instructionSimplifier);
+        instructionSimplifier.moveAbsolute = this.moveAbsolute.bind(instructionSimplifier);
+        instructionSimplifier.moveRelative = this.moveRelative.bind(instructionSimplifier);
+        instructionSimplifier.lineAbsolute = this.lineAbsolute.bind(instructionSimplifier);
+        instructionSimplifier.lineRelative = this.lineRelative.bind(instructionSimplifier);
+        instructionSimplifier.horizontalLineAbsolute = this.horizontalLineAbsolute.bind(instructionSimplifier);
+        instructionSimplifier.horizontalLineRelative = this.horizontalLineRelative.bind(instructionSimplifier);
+        instructionSimplifier.verticalLineAbsolute = this.verticalLineAbsolute.bind(instructionSimplifier);
+        instructionSimplifier.verticalLineRelative = this.verticalLineRelative.bind(instructionSimplifier);
+        instructionSimplifier.cubicCurveAbsolute = this.cubicCurveAbsolute.bind(instructionSimplifier);
+        instructionSimplifier.cubicCurveRelative = this.cubicCurveRelative.bind(instructionSimplifier);
     }
 
-    function simplifyInstructions(pathInstructions) {
+    simplifyInstructions(pathInstructions) {
         var simplifiedInstructions = [];
         this.currentPoint = {
             x: 0,
@@ -35,12 +30,12 @@ var InstructionSimplifier = (function() {
         return simplifiedInstructions;
     }
 
-    function simplifyInstruction(instructions, index) {
+    simplifyInstruction(instructions, index) {
         var instruction = instructions[index];
         return this[instruction.type](instructions, index, ...instruction.points);
     }
 
-    function moveAbsolute(instructions, index, x, y) {
+    moveAbsolute(instructions, index, x, y) {
         this.currentPoint = {
             x,
             y
@@ -48,7 +43,7 @@ var InstructionSimplifier = (function() {
         return instructions[index];
     }
 
-    function moveRelative(instructions, index, dx, dy) {
+    moveRelative(instructions, index, dx, dy) {
         var instruction = instructions[index];
         return {
             type: "moveAbsolute",
@@ -56,7 +51,7 @@ var InstructionSimplifier = (function() {
         };
     }
 
-    function lineAbsolute(instructions, index, x, y) {
+    lineAbsolute(instructions, index, x, y) {
         let last = this.currentPoint;
         this.currentPoint = {
             x,
@@ -68,7 +63,7 @@ var InstructionSimplifier = (function() {
         };
     }
 
-    function lineRelative(instructions, index, dx, dy) {
+    lineRelative(instructions, index, dx, dy) {
         var instruction = instructions[index];
         return {
             type: "lineAbsolute",
@@ -76,7 +71,7 @@ var InstructionSimplifier = (function() {
         };
     }
 
-    function horizontalLineAbsolute(instructions, index, x) {
+    horizontalLineAbsolute(instructions, index, x) {
         var instruction = instructions[index];
         return {
             type: "lineAbsolute",
@@ -84,7 +79,7 @@ var InstructionSimplifier = (function() {
         };
     }
 
-    function horizontalLineRelative(instructions, index, dx) {
+    horizontalLineRelative(instructions, index, dx) {
         var instruction = instructions[index];
         return {
             type: "lineAbsolute",
@@ -92,7 +87,7 @@ var InstructionSimplifier = (function() {
         };
     }
 
-    function verticalLineAbsolute(instructions, index, y) {
+    verticalLineAbsolute(instructions, index, y) {
         var instruction = instructions[index];
         return {
             type: "lineAbsolute",
@@ -100,7 +95,7 @@ var InstructionSimplifier = (function() {
         };
     }
 
-    function verticalLineRelative(instructions, index, dy) {
+    verticalLineRelative(instructions, index, dy) {
         var instruction = instructions[index];
         return {
             type: "lineAbsolute",
@@ -108,7 +103,7 @@ var InstructionSimplifier = (function() {
         };
     }
 
-    function cubicCurveAbsolute(instructions, index, startCX, startCY, endCX, endCY, x, y) {
+    cubicCurveAbsolute(instructions, index, startCX, startCY, endCX, endCY, x, y) {
         this.currentPoint = {
             x: x,
             y: y
@@ -116,7 +111,7 @@ var InstructionSimplifier = (function() {
         return instructions[index];
     }
 
-    function cubicCurveRelative(instructions, index, startCX, startCY, endCX, endCY, dx, dy) {
+    cubicCurveRelative(instructions, index, startCX, startCY, endCX, endCY, dx, dy) {
         var instruction = instructions[index];
         return {
             type: "cubicCurveAbsolute",
@@ -124,18 +119,11 @@ var InstructionSimplifier = (function() {
         };
     }
 
-    function cubicCurveShortAbsolute(instructions, index, endCX, endCY, x, y) {
+    cubicCurveShortAbsolute(instructions, index, endCX, endCY, x, y) {
         var instruction = instructions[index];
         return {
             type: "cubicCurveAbsolute",
             points: [startCX, startCY, endCX, endCY, this.currentPoint.x + dx, this.currentPoint.y + dy]
         };
     }
-
-    function init() {
-
-    }
-    return {
-        create: create
-    };
-})();
+}

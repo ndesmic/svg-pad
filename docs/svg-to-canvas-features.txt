@@ -9,11 +9,11 @@
 -Polygon
 	-fill+stroke+width
 -Text
-	-fill+stroke
+	-fill+stroke+style+weight
 -Path
 	*Not implemented
 -G
-	*Not Implemented
+	
 -Font
 	*Not Implemented
 -Glyph
