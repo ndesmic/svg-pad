@@ -25,7 +25,8 @@
 			<button id="btn-rect" title="rectangle"></button>
 			<button id="btn-circle" title="circle"></button>
 			<button id="btn-ellipse" title="ellipse"></button>
-			<button id="btn-triangle" title="triangle"></button>
+			<button id="btn-polygon" title="polygon"></button>
+			<button id="btn-star" title="star">Star</button>
 			<button id="btn-path" title="path"></button>
 			<button id="btn-text" title="text"></button>
 			<button id="btn-pretty-print" title="pretty print"></button>
@@ -33,7 +34,7 @@
 			<button id="btn-settings" title="settings">Settings</button>
 			<button id="btn-dropbox" title="save to dropbox"></button>
 		</nav>
-		<div id="main">
+		<main>
 			<div id="edit-panel" class="tab-control">
 				<div class="tab-contents">
 					<div id="svg-editor" class="editor tab-content" data-tab="svg"></div>
@@ -45,20 +46,41 @@
 				</div>
 			</div>
 			<div id="output">
-				<iframe seamless id="preview"></iframe>
+				<wc-svg-canvas id="preview"></wc-svg-canvas>
 				<div id="export"></div>
 			</div>
-		</div>
+		</main>
 		<dialog id="mod-settings">
-			Settings
+			<header>
+				<h2>Setting</h2>
+				<button class="close"></button>
+			</header>
+		</dialog>
+		<dialog id="mod-polygon">
+			<header>
+				<h2>Polygon</h2>
+				<button class="close"></button>
+				<wc-polygon-generator></wc-polygon-generator>
+			</header>
+		</dialog>
+		<dialog id="mod-star">
+			<header>
+				<h2>Star</h2>
+				<button class="close"></button>
+				<wc-star-generator></wc-star-generator>
+			</header>
 		</dialog>
 	</app-root>
-	<service-worker url="service-worker.js" scope="./"></service-worker>
+	<!--<service-worker url="service-worker.js" scope="./"></service-worker>-->
 	<script src="js/lib/code-mirror.js"></script>
 	<script src="js/lib/keyboard.js"></script>
 	<script src="js/lib/tabs.js"></script>
+
 	<script src="js/components/service-worker.js" type="module"></script>
 	<script src="js/components/app-root.js" type="module"></script>
+	<script src="js/components/wc-svg-canvas.js" type="module"></script>
+	<script src="js/components/wc-polygon-generator.js" type="module"></script>
+	<script src="js/components/wc-star-generator.js" type="module"></script>
 </body>
 
 </html>

@@ -3,6 +3,7 @@ import { SvgToCanvas } from "../lib/svg-to-canvas.js";
 import { Dropbox } from "../lib/dropbox.js";
 import { prettyPrintXml } from "../lib/pretty-print.js";
 import { empty } from "../lib/dom-tools.js";
+import {} from "./wc-svg-canvas.js"; //slow load until this component is ready
 
 function storedOrDefault(key, defaultValue = "") {
 	const storedValue = localStorage.getItem(key);
@@ -58,6 +59,7 @@ customElements.define("app-root",
 			this.fileDrop = this.fileDrop.bind(appRoot);
 			this.fileUnhighlight = this.fileUnhighlight.bind(appRoot);
 			this.openSettings = this.openSettings.bind(appRoot);
+			this.openStarTool = this.openStarTool.bind(appRoot);
 			this.haltEvent = this.haltEvent.bind(appRoot);
 		}
 
@@ -92,7 +94,8 @@ customElements.define("app-root",
 				rectButton: document.querySelector("#btn-rect"),
 				circleButton: document.querySelector("#btn-circle"),
 				ellipseButton: document.querySelector("#btn-ellipse"),
-				triangleButton: document.querySelector("#btn-triangle"),
+				polygonButton: document.querySelector("#btn-polygon"),
+				starButton: document.querySelector("#btn-star"),
 				textButton: document.querySelector("#btn-text"),
 				pathButton: document.querySelector("#btn-path"),
 				export: document.querySelector("#export"),
@@ -139,12 +142,13 @@ customElements.define("app-root",
 			this.dom.settingsButton.addEventListener("click", this.openSettings);
 			this.dom.loadButton.addEventListener("click", this.load);
 			this.dom.saveButton.addEventListener("click", this.save);
+			this.dom.starButton.addEventListener("click", this.openStarTool);
 			//
 			this.dom.lineButton.addEventListener("click", this.inserts.line);
 			this.dom.rectButton.addEventListener("click", this.inserts.rectangle);
 			this.dom.circleButton.addEventListener("click", this.inserts.circle);
 			this.dom.ellipseButton.addEventListener("click", this.inserts.ellipse);
-			this.dom.triangleButton.addEventListener("click", this.inserts.triangle);
+			this.dom.polygonButton.addEventListener("click", this.inserts.triangle);
 			this.dom.pathButton.addEventListener("click", this.inserts.path);
 			this.dom.textButton.addEventListener("click", this.inserts.text);
 		}
@@ -165,26 +169,14 @@ customElements.define("app-root",
 		update() {
 			this.dom.export.style.display = "none";
 
-			this.svgData = this.subviews.svgEditor.getValue();
-			this.cssData = this.subviews.cssEditor.getValue();
+			const svgData = this.subviews.svgEditor.getValue();
+			const cssData = this.subviews.cssEditor.getValue();
 
-			this.svgBlob = new Blob([this.svgData], { type: "image/svg+xml" });
-			this.cssBlob = new Blob([this.cssData], { type: "text/css" });
+			this.dom.preview.update(svgData, cssData);
+			this.dom.downloadButton.href = `data:image/svg+xml;utf8,${svgData}`;
 
-			window.URL.revokeObjectURL(this.svgUrl);
-			window.URL.revokeObjectURL(this.cssUrl);
-			window.URL.revokeObjectURL(this.docUrl);
-
-			this.svgUrl = window.URL.createObjectURL(this.svgBlob);
-			this.cssUrl = window.URL.createObjectURL(this.cssBlob);
-			const doc = createDocument(this.cssUrl, this.svgData);
-			const docBlob = new Blob([doc], { type: "text/html" });
-			this.docUrl = window.URL.createObjectURL(docBlob);
-
-			this.dom.preview.src = this.docUrl;
-			this.dom.downloadButton.href = this.svgUrl;
-			localStorage.setItem("lastSvgSave", this.svgData);
-			localStorage.setItem("lastCssSave", this.cssData);
+			localStorage.setItem("lastSvgSave", svgData);
+			localStorage.setItem("lastCssSave", cssData);
 		}
 
 		updateSettings() {
@@ -344,9 +336,21 @@ customElements.define("app-root",
 		}
 
 		openSettings() {
-			const settings = document.querySelector("#mod-settings");
-			settings.show();
-			document.querySelector("#mod-settings-close").addEventListener("click", () => setting.close());
+			const settingsModal = document.querySelector("#mod-settings");
+			settingsModal.show();
+			document.querySelector("#mod-settings .close").addEventListener("click", () => settingsModal.close());
+		}
+
+		openPolygonTool() {
+			const polygonModal = document.querySelector("#mod-polygon");
+			polygonModal.show();
+			document.querySelector("#mod-polygon .close").addEventListener("click", () => polygonModal.close());
+		}
+
+		openStarTool() {
+			const starModal = document.querySelector("#mod-star");
+			starModal.show();
+			document.querySelector("#mod-star .close").addEventListener("click", () => starModal.close());
 		}
 
 		haltEvent(e) {

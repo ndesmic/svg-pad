@@ -17,6 +17,10 @@
 -font UI
 	-glyph
 -reset button
-
 -background for SVG workspace
 -background for CSS workspace
+
+===================================
+
+-bake CSS into SVG
+-dropdown menus for polgons, save
