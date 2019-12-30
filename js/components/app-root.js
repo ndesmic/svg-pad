@@ -24,15 +24,17 @@ customElements.define("app-root",
 		}
 
 		bind(appRoot){
+			this.insertSvgText = this.insertSvgText.bind(appRoot);
+
 			this.inserts = {
-				rectangle: this.insertSvgText.bind(appRoot, '<rect x="0" y="0" height="8" width="8" fill="blue" />'),
-				ellipse: this.insertSvgText.bind(appRoot, '<ellipse cx="5" cy="5" rx="5" ry="2.5" fill="magenta" />'),
-				circle: this.insertSvgText.bind(appRoot, '<circle cx="5" cy="5" r="5" fill="red" />'),
-				triangle: this.insertSvgText.bind(appRoot, '<polygon points="0,10 5,0 10,10" fill="green" />'),
-				line: this.insertSvgText.bind(appRoot, '<line x1="0" y1="10" x2="10" y2="0" stroke="black" stroke-width="2" />'),
-				text: this.insertSvgText.bind(appRoot, '<text x="5" y="5">Lorem Ipsum</text>'),
-				path: this.insertSvgText.bind(appRoot, '<path d="M0,5 C5,10 10,0 15,5" stroke="black" fill="none" stroke-width="1" />')
+				rectangle: () => this.insertSvgText('<rect x="10" y="10" height="50" width="75" fill="blue" />'),
+				ellipse: () => this.insertSvgText('<ellipse cx="75" cy="50" rx="50" ry="30" fill="magenta" />'),
+				circle: () => this.insertSvgText('<circle cx="50" cy="50" r="40" fill="red" />'),
+				line: () => this.insertSvgText('<line x1="10" y1="10" x2="60" y2="70" stroke="black" stroke-width="2" />'),
+				text: () => this.insertSvgText('<text x="40" y="50">Lorem Ipsum</text>'),
+				path: () => this.insertSvgText('<path d="M10,50 C50,100 100,0 150,50" stroke="black" fill="none" stroke-width="3" />')
 			};
+			
 			this.set = {
 				backgroundColor: this.set.backgroundColor.bind(appRoot)
 			};
@@ -60,6 +62,8 @@ customElements.define("app-root",
 			this.fileUnhighlight = this.fileUnhighlight.bind(appRoot);
 			this.openSettings = this.openSettings.bind(appRoot);
 			this.openStarTool = this.openStarTool.bind(appRoot);
+			this.openPolygonTool = this.openPolygonTool.bind(appRoot);
+			this.openGearTool = this.openGearTool.bind(appRoot);
 			this.haltEvent = this.haltEvent.bind(appRoot);
 		}
 
@@ -78,7 +82,7 @@ customElements.define("app-root",
 
 		cacheDom() {
 			this.dom = {
-				main: document.querySelector("#main"),
+				main: document.querySelector("main"),
 				preview: document.querySelector("#preview"),
 				backgroundColorButton: document.querySelector("#btn-background-color"),
 				loadButton: document.querySelector("#btn-load"),
@@ -96,6 +100,7 @@ customElements.define("app-root",
 				ellipseButton: document.querySelector("#btn-ellipse"),
 				polygonButton: document.querySelector("#btn-polygon"),
 				starButton: document.querySelector("#btn-star"),
+				gearButton: document.querySelector("#btn-gear"),
 				textButton: document.querySelector("#btn-text"),
 				pathButton: document.querySelector("#btn-path"),
 				export: document.querySelector("#export"),
@@ -105,7 +110,14 @@ customElements.define("app-root",
 				svgEditor: document.querySelector("#svg-editor"),
 				cssEditor: document.querySelector("#css-editor"),
 				svgTab: document.querySelector("#mode-svg"),
-				cssTab: document.querySelector("#mode-css")
+				cssTab: document.querySelector("#mode-css"),
+
+				starModal: document.querySelector("#mod-star"),
+				starTool: document.querySelector("wc-star-generator"),
+				polyModal: document.querySelector("#mod-polygon"),
+				polygonTool: document.querySelector("wc-polygon-generator"),
+				gearModal: document.querySelector("#mod-gear"),
+				gearTool: document.querySelector("wc-gear-generator")
 			};
 		}
 
@@ -143,14 +155,29 @@ customElements.define("app-root",
 			this.dom.loadButton.addEventListener("click", this.load);
 			this.dom.saveButton.addEventListener("click", this.save);
 			this.dom.starButton.addEventListener("click", this.openStarTool);
-			//
+			this.dom.polygonButton.addEventListener("click", this.openPolygonTool);
+			this.dom.gearButton.addEventListener("click", this.openGearTool);
+			//SVG buttons
 			this.dom.lineButton.addEventListener("click", this.inserts.line);
 			this.dom.rectButton.addEventListener("click", this.inserts.rectangle);
 			this.dom.circleButton.addEventListener("click", this.inserts.circle);
 			this.dom.ellipseButton.addEventListener("click", this.inserts.ellipse);
-			this.dom.polygonButton.addEventListener("click", this.inserts.triangle);
 			this.dom.pathButton.addEventListener("click", this.inserts.path);
 			this.dom.textButton.addEventListener("click", this.inserts.text);
+			//modal tools
+			this.dom.starTool.addEventListener("star-generated", e => {
+				this.insertSvgText(e.detail);
+				this.dom.starModal.close();
+			});
+			this.dom.polygonTool.addEventListener("polygon-generated", e => {
+				this.insertSvgText(e.detail);
+				this.dom.polyModal.close();
+			});
+			this.dom.gearTool.addEventListener("gear-generated", e => {
+				this.insertSvgText(e.detail);
+				this.dom.gearModal.close();
+			});
+			this.dom.main.addEventListener("click", () => document.querySelectorAll("details").forEach(d => d.removeAttribute("open")));
 		}
 
 		initSettings() {
@@ -335,22 +362,27 @@ customElements.define("app-root",
 			this.dom.cssTab.removeClass("css-over");
 		}
 
+		openModal(id){
+			const modal = document.querySelector(id);
+			modal.show();
+			document.querySelectorAll("details").forEach(d => d.removeAttribute("open"));
+			document.querySelector(`${id} .close`).addEventListener("click", () => modal.close(), { once: true });
+		}
+
 		openSettings() {
-			const settingsModal = document.querySelector("#mod-settings");
-			settingsModal.show();
-			document.querySelector("#mod-settings .close").addEventListener("click", () => settingsModal.close());
+			this.openModal("#mod-settings");
 		}
 
 		openPolygonTool() {
-			const polygonModal = document.querySelector("#mod-polygon");
-			polygonModal.show();
-			document.querySelector("#mod-polygon .close").addEventListener("click", () => polygonModal.close());
+			this.openModal("#mod-polygon");
 		}
 
 		openStarTool() {
-			const starModal = document.querySelector("#mod-star");
-			starModal.show();
-			document.querySelector("#mod-star .close").addEventListener("click", () => starModal.close());
+			this.openModal("#mod-star");
+		}
+
+		openGearTool() {
+			this.openModal("#mod-gear");
 		}
 
 		haltEvent(e) {

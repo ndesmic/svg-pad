@@ -12,12 +12,24 @@ export function renderPolygon(height, width, points, fill, stroke, strokeWidth){
     svg.appendChild(polygon);
     return svg;
 }
-export function renderPath(height, width, points, fill, stroke, strokeWidth){
+export function renderLinePath(height, width, points, fill, stroke, strokeWidth) {
     const svg = document.createElementNS(svgns, "svg");
     svg.setAttributeNS(null, "height", height);
     svg.setAttributeNS(null, "width", width);
     const path = document.createElementNS(svgns, "path");
-    path.setAttributeNS(null, "d", `M${points[0][0]},${points[0][1]} ` + points.slice(1).map(([x,y]) => `L${x},${y}`).join(" ") + "Z");
+    path.setAttributeNS(null, "d", `M${points[0][0]},${points[0][1]} ` + points.slice(1).map(([x, y]) => `L${x},${y}`).join(" ") + "Z");
+    path.setAttributeNS(null, "fill", fill);
+    path.setAttributeNS(null, "stroke", stroke);
+    path.setAttributeNS(null, "stroke-width", strokeWidth);
+    svg.appendChild(path);
+    return svg;
+}
+export function renderPath(height, width, instructions, fill, stroke, strokeWidth) {
+    const svg = document.createElementNS(svgns, "svg");
+    svg.setAttributeNS(null, "height", height);
+    svg.setAttributeNS(null, "width", width);
+    const path = document.createElementNS(svgns, "path");
+    path.setAttributeNS(null, "d", instructions.map(([op, ...args]) => op + args.join(" ")).join(" "));
     path.setAttributeNS(null, "fill", fill);
     path.setAttributeNS(null, "stroke", stroke);
     path.setAttributeNS(null, "stroke-width", strokeWidth);

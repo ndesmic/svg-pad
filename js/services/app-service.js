@@ -6,7 +6,7 @@ const AppService = (function(){
 	};
 
 	function create(options){
-		let appService = {};
+		const appService = {};
 		appService.options = { ...defaults, ...options };
 		bind(appService);
 		appService.init();
@@ -18,7 +18,6 @@ const AppService = (function(){
 		appService.attachEvents = attachEvents.bind(appService);
 		appService.onInstall = onInstall.bind(appService);
 		appService.onFetch = onFetch.bind(appService);
-		appService.respondFromCache = respondFromCache.bind(appService);
 		appService.cacheResponse = cacheResponse.bind(appService);
 	}
 
@@ -36,20 +35,11 @@ const AppService = (function(){
 
 	function onFetch(e){
 		e.respondWith(
-			caches.match(e.request)
-				.then(response => this.respondFromCache(e.request, response))
+			fetch(e.request)
+				.then(response => this.cacheResponse(e.request, response))
+				.catch(() =>
+					caches.match(e.request))
 		);
-	}
-
-	function respondFromCache(request, response){
-		if(response){
-			return response;
-		}
-
-		var fetchRequest = request.clone();
-
-		return fetch(fetchRequest)
-			.then(newResponse => this.cacheResponse(request, newResponse));
 	}
 
 	function cacheResponse(request, response){
@@ -57,10 +47,10 @@ const AppService = (function(){
 			return response;
 		}
 
-		var responseToCache = response.clone();
+		const responseToCache = response.clone();
 
 		caches.open(this.options.cacheName)
-			.then(cache => cache.put(request, responseToCache));
+				.then(cache => cache.put(request, responseToCache));
 
 		return response;
 	}

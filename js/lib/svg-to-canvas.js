@@ -300,9 +300,9 @@ export class SvgToCanvas {
 		const attrs = getAttrs(element, ["d"]);
 		const instructionList =  this.instructionSimplifier.simplifyInstructions(this.svgPathParser.parsePath(attrs.d));
 		this.canvasRenderer.drawInstructionList(instructionList, {
-			strokeColor: attrs.stroke,
+			stroke: attrs.stroke || "#000",
 			strokeWidth: attrs.strokeWidth,
-			fillColor: attrs.fill || "#000"
+			fillColor: attrs.fill
 		});
 	}
 }

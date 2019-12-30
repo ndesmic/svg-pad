@@ -55,3 +55,8 @@ const domParser = new DOMParser();
 export function parseXml(xmlString) {
 	return domParser.parseFromString(xmlString, "text/xml");
 }
+
+export function fireEvent(element, eventName, payload = null) {
+	const event = new CustomEvent(eventName, { detail: payload });
+	return element.dispatchEvent(event);
+}

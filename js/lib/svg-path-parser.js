@@ -21,6 +21,10 @@ const controlChars = {
 	"a": "arcRelative"
 };
 
+function isControlChar(char){
+	return Object.keys(controlChars).includes(char);
+}
+
 export class SvgPathParser {
 
 	constructor() {
@@ -59,9 +63,5 @@ export class SvgPathParser {
 		}
 
 		return instructions;
-	}
-
-	isControlChar(char){	
-		return Object.keys(controlChars).includes(char);
 	}
 }

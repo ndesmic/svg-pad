@@ -42,7 +42,7 @@ export class CanvasRenderer {
         for (var i = 0; i < pathInstructions.length; i++) {
             this.drawInstruction(pathInstructions[i]);
         }
-        if (options.fillColor) {
+        if (options.fillColor && options.fillColor !== "none") {
             this.context.fill();
         }
         if (options.stroke) {

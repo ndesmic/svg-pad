@@ -3,6 +3,7 @@
 
 <head>
 	<title>SVG Pad</title>
+	<link rel="stylesheet" href="css/system.css" />
 	<link rel="stylesheet" href="css/index.css" />
 	<link rel="stylesheet" href="css/codemirror.css" />
 	<link rel="manifest" href="manifest.json" />
@@ -14,21 +15,104 @@
 </head>
 
 <body>
-	<app-root dropbox-app-name="SVGPad" dropbox-app-key="1s3rbz0zdqy148u" default-svg="&lt;svg version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; height=&quot;100&quot; width=&quot;100&quot;&gt;\n\r&lt;/svg&gt;">
+	<app-root dropbox-app-name="SVGPad" dropbox-app-key="1s3rbz0zdqy148u" default-svg="&lt;svg version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; height=&quot;720&quot; width=&quot;720&quot;&gt;\n\r&lt;/svg&gt;">
 		<nav>
+			<details>
+				<summary>
+					<span id="btn-tools" title="shape">Tools</span>
+				</summary>
+				<div class="list">
+					<h2>Simple</h2>
+					<ul>
+						<li>
+							<button id="btn-line" title="line">
+								<svg height="15" width="15">
+									<line x1="0" y1="15" x2="15" y2="0" stroke="black" stroke-width="2" />
+								</svg>
+								Line
+							</button>
+						</li>
+						<li>
+							<button id="btn-rect" title="rectangle">
+								<svg height="15" width="15">
+									<rect x="0" y="0" height="15" width="15" fill="black" />
+								</svg>
+								Rectangle
+							</button>
+						</li>
+						<li>
+							<button id="btn-circle" title="circle">
+								<svg height="15" width="15">
+									<circle cx="7.5" cy="7.5" r="7.5" fill="black" />
+								</svg>
+								Circle
+							</button>
+						</li>
+						<li>
+							<button id="btn-ellipse" title="ellipse">
+								<svg height="10" width="15">
+									<ellipse cx="7.5" cy="5" rx="7.5" ry="5" fill="black" />
+								</svg>
+								Ellipse
+							</button>
+						</li>
+						<li>
+							<button id="btn-path" title="path">
+								<svg height="18" width="18">   
+									<path d="M0 10 C 5 0, 6 0, 10 10 S 15 18, 18 10" stroke="black" stroke-width="2" fill="transparent" />
+								</svg>
+								Path
+							</button>
+						</li>
+						<li>
+							<button id="btn-text" title="text">
+								<svg height="24" width="14">
+									<text x="0" y="20" font-size="21" font-family="Times New Roman" font-weight="bold">T</text>
+								</svg>
+								Text
+							</button>
+						</li>
+					</ul>
+					<h2>Advanced</h2>
+					<ul>
+						<li>
+							<button id="btn-polygon" title="polygon">
+								<svg height="15" width="15">
+									<path
+										d="M12.117461064942436,13.410080652050414 L3.3060532239694,13.717781794162814 L0.2905372804626083,5.432719831372507 L7.238253774731245,0.0045687973567813955 L14.547694655894313,4.934848925057485Z"
+										fill="black"></path>
+								</svg>
+								Polygon
+							</button>
+						</li>
+						<li>
+							<button id="btn-star" title="star">
+								<svg height="16" width="16">
+									<path
+										d="M11.905184028479734,8.865758455752411 L13.300960385725901,13.991645766312017 L8.383383010080896,11.981584793468716 L3.939693096314369,14.893033283532208 L4.331759702459504,9.594996275700986 L0.1896319430405322,6.26848308849518 L5.3495198071370496,5.004177116843993 L7.233233979838205,0.036830413062570067 L10.030153451842814,4.553483358233896 L15.33648059508099,4.810007448598027Z"
+										fill="black"></path>
+								</svg>
+								Star
+							</button>
+						</li>
+						<li>
+							<button id="btn-gear" title="gear">
+								<svg height="16" width="16">
+									<path
+										d="M11.984778792366981 7.6513770290093674 L15.878462024097665 9.389185421335442 L15.517540966287267 10.73616114660535 L11.276608177155968 10.294305745404184 L9.562924513957096 11.682019413809762 L9.113384807680523 15.922144549932563 L7.720804026379994 15.995126616152767 L6.830513181109053 11.825219023852142 L4.981161679108913 10.62423611596203 L0.8096476296066655 11.506969174312621 L0.3099064324934506 10.205098846535996 L4.000609219374435 8.069809625749135 L4.57133079719155 5.939847700359785 L2.44273303632802 2.245281597290793 L3.526456772234022 1.3676994195596688 L6.6977273821713705 4.217925697602734 L8.89980421737546 4.102519740859059 L11.755772502287122 0.9364192571285832 L12.925291802605262 1.6959139711462212 L11.19454204018917 5.592739907391804 Z"
+										fill="#000" stroke="black" stroke-width="1"></path>
+								</svg>
+								Gear
+							</button>
+						</li>
+					</ul>
+				</div>
+			</details>
 			<button id="btn-load" title="load">Load</button>
 			<button id="btn-save" title="save"></button>
 			<a id="btn-download" download="image.svg" title="download">Download</a>
 			<button id="btn-export" title="export"></button>
 			<button id="btn-export-preview" title="export preview"></button>
-			<button id="btn-line" title="line"></button>
-			<button id="btn-rect" title="rectangle"></button>
-			<button id="btn-circle" title="circle"></button>
-			<button id="btn-ellipse" title="ellipse"></button>
-			<button id="btn-polygon" title="polygon"></button>
-			<button id="btn-star" title="star">Star</button>
-			<button id="btn-path" title="path"></button>
-			<button id="btn-text" title="text"></button>
 			<button id="btn-pretty-print" title="pretty print"></button>
 			<button id="btn-background-color" title="background"></button>
 			<button id="btn-settings" title="settings">Settings</button>
@@ -53,25 +137,52 @@
 		<dialog id="mod-settings">
 			<header>
 				<h2>Setting</h2>
-				<button class="close"></button>
+				<button class="close">
+					<svg height="24" width="24">
+						<line x1="0" y1="0" x2="16" y2="16" stroke="black" stroke-width="4" />
+						<line x1="0" y1="16" x2="16" y2="0" stroke="black" stroke-width="4" />
+					</svg>
+				</button>
 			</header>
 		</dialog>
 		<dialog id="mod-polygon">
 			<header>
 				<h2>Polygon</h2>
-				<button class="close"></button>
-				<wc-polygon-generator></wc-polygon-generator>
+				<button class="close">
+					<svg height="16" width="16">
+						<line x1="0" y1="0" x2="16" y2="16" stroke="black" stroke-width="4" />
+						<line x1="0" y1="16" x2="16" y2="0" stroke="black" stroke-width="4" />
+					</svg>
+				</button>
 			</header>
+			<wc-polygon-generator></wc-polygon-generator>
 		</dialog>
 		<dialog id="mod-star">
 			<header>
 				<h2>Star</h2>
-				<button class="close"></button>
-				<wc-star-generator></wc-star-generator>
+				<button class="close">
+					<svg height="16" width="16">
+						<line x1="0" y1="0" x2="16" y2="16" stroke="black" stroke-width="4" />
+						<line x1="0" y1="16" x2="16" y2="0" stroke="black" stroke-width="4" />
+					</svg>
+				</button>
 			</header>
+			<wc-star-generator></wc-star-generator>
+		</dialog>
+		<dialog id="mod-gear">
+			<header>
+				<h2>Gear</h2>
+				<button class="close">
+					<svg height="16" width="16">
+						<line x1="0" y1="0" x2="16" y2="16" stroke="black" stroke-width="4" />
+						<line x1="0" y1="16" x2="16" y2="0" stroke="black" stroke-width="4" />
+					</svg>
+				</button>
+			</header>
+			<wc-gear-generator></wc-gear-generator>
 		</dialog>
 	</app-root>
-	<!--<service-worker url="service-worker.js" scope="./"></service-worker>-->
+	<service-worker url="service-worker.js" scope="./"></service-worker>
 	<script src="js/lib/code-mirror.js"></script>
 	<script src="js/lib/keyboard.js"></script>
 	<script src="js/lib/tabs.js"></script>
@@ -81,6 +192,7 @@
 	<script src="js/components/wc-svg-canvas.js" type="module"></script>
 	<script src="js/components/wc-polygon-generator.js" type="module"></script>
 	<script src="js/components/wc-star-generator.js" type="module"></script>
+	<script src="js/components/wc-gear-generator.js" type="module"></script>
 </body>
 
 </html>

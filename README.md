@@ -25,3 +25,5 @@ All work is saved automatically in local storage so as long as you don't empty c
 
 Use the tabs at the bottom to switch between CSS and SVG.
 
+If you haven't visited in a while it's advised that you clear all service worker caches just in case.
+
