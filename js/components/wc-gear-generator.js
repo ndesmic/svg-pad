@@ -23,7 +23,7 @@ customElements.define("wc-gear-generator",
 		render() {
 			this.attachShadow({ mode: "open" });
 			this.shadowRoot.innerHTML = `
-				<link rel="stylesheet" href="../../css/system.css">
+				<link rel="stylesheet" href="css/system.css">
 				<style>
 					:host { display: grid; grid-template-columns: [form] 200px [output] auto; }
 					fieldset { padding: 0px; margin-bottom: 0.5rem; }

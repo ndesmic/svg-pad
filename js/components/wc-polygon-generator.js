@@ -23,7 +23,7 @@ customElements.define("wc-polygon-generator",
 		render(){
 			this.attachShadow({ mode: "open" });
 			this.shadowRoot.innerHTML = `
-				<link rel="stylesheet" href="../../css/system.css">
+				<link rel="stylesheet" href="css/system.css">
 				<style>
 					:host { display: grid; grid-template-columns: [form] 50% [output] 50%; }
 					fieldset { padding: 0px; margin-bottom: 0.5rem; }
