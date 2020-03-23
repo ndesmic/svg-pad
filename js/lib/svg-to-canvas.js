@@ -1,7 +1,7 @@
 import { parseSvgPoints, parseXml } from "./utilities.js";
-import { CanvasRenderer } from "./canvas-renderer.js";
-import { InstructionSimplifier } from "./instruction-simplifier.js";
-import { SvgPathParser } from "./svg-path-parser.js";
+import { CanvasRenderer } from "./svg-path/canvas-renderer.js";
+import { InstructionSimplifier } from "./svg-path/instruction-simplifier.js";
+import { SvgPathParser } from "./svg-path/svg-path-parser.js";
 
 function getAsClipPath(element) {
 	return {

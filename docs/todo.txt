@@ -23,4 +23,29 @@
 ===================================
 
 -bake CSS into SVG
--dropdown menus for polgons, save
+-dropdown menus for save
+
+===================================
+Tools:
+
+Pills
+Lightbulbs
+Hearts
+Squircles
+Spiral
+Wave
+Lightning bolt
+ECG
+Gems (3D raster)
+
+===================================
+
+- Relative to Absolute
+- Absolute to Relative
+- Flip X
+- Flip Y
+- Translate X
+- Translate Y
+- Arbitrary rotation
+- Scale
+- Transform baking

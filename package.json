@@ -1,24 +1,32 @@
 {
-  "name": "svg-pad",
-  "version": "1.0.0",
-  "description": "https://somnid.github.io/svg-pad/",
-  "main": "service-worker.js",
-  "directories": {
-    "doc": "docs",
-    "test": "tests"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx http-server . -c-1 -o"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Somnid/svg-pad.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Somnid/svg-pad/issues"
-  },
-  "homepage": "https://github.com/Somnid/svg-pad#readme"
+    "name": "svg-pad",
+    "version": "1.0.0",
+    "description": "https://somnid.github.io/svg-pad/",
+    "main": "service-worker.js",
+    "directories": {
+        "doc": "docs",
+        "test": "tests"
+    },
+    "scripts": {
+        "test": "npx karma start ./karma.conf.js",
+        "start": "npx http-server . -c-1 -o",
+        "test:debug": "npx karma start ./karma.conf.js --no-single-run --auto-watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Somnid/svg-pad.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Somnid/svg-pad/issues"
+    },
+    "homepage": "https://github.com/Somnid/svg-pad#readme",
+    "devDependencies": {
+        "jasmine-core": "^3.5.0",
+        "karma": "^4.4.1",
+        "karma-chrome-launcher": "^3.1.0",
+        "karma-cli": "^2.0.0",
+        "karma-jasmine": "^3.1.1"
+    }
 }
