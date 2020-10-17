@@ -1,6 +1,6 @@
 # svg-pad
 
-https://somnid.github.io/svg-pad/
+https://ndesmic.github.io/svg-pad/
 
 A text-based SVG editor for the web.
 
