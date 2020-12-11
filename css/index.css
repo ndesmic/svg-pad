@@ -37,7 +37,7 @@ nav a {
 	width: auto;
 	display: flex;
 	flex-flow: row nowrap;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
 	padding: 0 0.5rem;
 }
@@ -51,6 +51,7 @@ nav a::after{
 	width: 1px;
 	background: #ccc;
 }
+nav a:hover,
 nav button:hover {
 	background-color: #efefef;
 }
@@ -91,16 +92,14 @@ app-root {
 	height: 100%;
 }
 main {
-	display: flex;
-	flex-flow: row nowrap;
-	justify-content: flex-start;
-	align-items: stretch;
-	flex: 1;
 	z-index: 0;
+	height: 100%;
+}
+main > wc-split-panel {
+	height: 100%;
 }
 #edit-panel {
 	height: 100%;
-	width: 50%;
 }
 #edit-panel .tab-contents {
 	height: calc(100% - 2rem);
@@ -128,7 +127,6 @@ main {
 }
 #output {
 	height: 100%;
-	width: 50%;
 	border: 1px solid black;
 }
 
@@ -193,8 +191,7 @@ main {
 }
 
 #btn-tools { width: 6rem; }
-#btn-save { background-image: url(../svg/disk.svg); background-repeat: no-repeat; background-position: center center; }
-#btn-export { background-image: url(../svg/export.svg); background-repeat:no-repeat; background-position: center center; }
+#btn-file { width: 6rem; }
 #btn-export-preview { background-image: url(../svg/export-preview.svg); background-repeat:no-repeat; background-position: center center; }
 #btn-pretty-print { background-image: url(../svg/bracket.svg); background-repeat:no-repeat; background-position: center center; }
 #btn-background-color { background-image: url(../svg/background.svg); background-repeat: no-repeat; background-position: center center; }

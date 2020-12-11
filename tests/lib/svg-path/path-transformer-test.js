@@ -1,5 +1,5 @@
 import { flipAcrossX } from "../../../js/lib/svg-path/path-transformer.js";
-/*
+
 describe("path-transformer", () => {
 	describe("flipAcrossX", () => {
 		[
@@ -74,4 +74,3 @@ describe("path-transformer", () => {
 			}));
 	});
 });
-*/

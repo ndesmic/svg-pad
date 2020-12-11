@@ -23,7 +23,6 @@
 ===================================
 
 -bake CSS into SVG
--dropdown menus for save
 
 ===================================
 Tools:

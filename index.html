@@ -16,10 +16,48 @@
 
 <body>
 	<app-root dropbox-app-name="SVGPad" dropbox-app-key="1s3rbz0zdqy148u" default-svg="&lt;svg version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; height=&quot;720&quot; width=&quot;720&quot;&gt;\n\r&lt;/svg&gt;">
+		<sp-nav>
 		<nav>
 			<details>
 				<summary>
-					<span id="btn-tools" title="shape">Tools</span>
+					<span id="btn-file" title="File">File</span>
+				</summary>
+				<div class="list">
+					<h2>Save</h2>
+					<ul>
+						<li>
+							<a id="btn-download" download="image.svg" title="download">Download</a>
+						</li>
+						<li>
+							<button id="btn-save" title="save">
+								<svg height="25" width="25" shape-rendering="crispEdges">
+									<rect x="5" y="5" height="15" width="15" stroke="black" stroke-width="1.0" fill="transparent" />
+									<rect x="8.5" y="5" width="8.5" height="5" stroke="black" stroke-width="1.0" fill="transparent" />
+								</svg>
+								Save
+							</button>
+						</li>
+						<li>
+							<button id="btn-export" title="export">
+								<svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="25" width="25">
+									<path d="M8.5,10.5h-3.5v10h15v-10h-3.5" stroke="black" fill="none" />
+									<path d="M10,14v-6h-3l5.5,-6l5.5,6h-3v6" stroke="black" fill="none" />
+								</svg>
+								Export
+							</button>
+						</li>
+					</ul>
+					<h2>Load</h2>
+					<ul>
+						<li>
+							<button id="btn-load" title="load">Load</button>
+						</li>
+					</ul>
+				</div>
+			</details>
+			<details>
+				<summary>
+					<span id="btn-tools" title="Tools">Tools</span>
 				</summary>
 				<div class="list">
 					<h2>Simple</h2>
@@ -119,32 +157,31 @@
 						</li>
 					</ul>
 				</div>
-			</details>-->
-			<button id="btn-load" title="load">Load</button>
-			<button id="btn-save" title="save"></button>
-			<a id="btn-download" download="image.svg" title="download">Download</a>
-			<button id="btn-export" title="export"></button>
+			</details>-->			
 			<button id="btn-export-preview" title="export preview"></button>
 			<button id="btn-pretty-print" title="pretty print"></button>
 			<button id="btn-background-color" title="background"></button>
 			<button id="btn-settings" title="settings">Settings</button>
 			<button id="btn-dropbox" title="save to dropbox"></button>
 		</nav>
+		</sp-nav>
 		<main>
-			<div id="edit-panel" class="tab-control">
-				<div class="tab-contents">
-					<div id="svg-editor" class="editor tab-content" data-tab="svg"></div>
-					<div id="css-editor" class="editor tab-content" data-tab="css"></div>
+			<wc-split-panel>
+				<div id="edit-panel" class="tab-control" slot="1">
+					<div class="tab-contents">
+						<div id="svg-editor" class="editor tab-content" data-tab="svg"></div>
+						<div id="css-editor" class="editor tab-content" data-tab="css"></div>
+					</div>
+					<div class="tabs">
+						<a class="tab selected" data-tab="svg" id="mode-svg">SVG</a>
+						<a class="tab" data-tab="css" id="mode-css">CSS</a>
+					</div>
 				</div>
-				<div class="tabs">
-					<a class="tab selected" data-tab="svg" id="mode-svg">SVG</a>
-					<a class="tab" data-tab="css" id="mode-css">CSS</a>
+				<div id="output" slot="2">
+					<wc-svg-canvas id="preview"></wc-svg-canvas>
+					<div id="export"></div>
 				</div>
-			</div>
-			<div id="output">
-				<wc-svg-canvas id="preview"></wc-svg-canvas>
-				<div id="export"></div>
-			</div>
+			</wc-split-panel>
 		</main>
 		<dialog id="mod-settings">
 			<header>
@@ -205,6 +242,8 @@
 	<script src="js/components/wc-polygon-generator.js" type="module"></script>
 	<script src="js/components/wc-star-generator.js" type="module"></script>
 	<script src="js/components/wc-gear-generator.js" type="module"></script>
+	<script src="js/components/sp-nav.js" type="module"></script>
+	<script src="js/components/wc-split-panel.js" type="module"></script>
 </body>
 
 </html>

@@ -15,6 +15,14 @@
       "density": 2.0
     }
   ],
+  "file_handlers": [
+    {
+      "action": "/index.html",
+      "accept": {
+        "image/svg+xml": ".svg"
+      }
+    }
+  ],
   "theme_color": "#000",
   "background_color": "#fff",
   "start_url": "index",

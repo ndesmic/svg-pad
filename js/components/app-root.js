@@ -1,9 +1,9 @@
-import { createDocument, download, normalizeFileName } from "../lib/utilities.js";
+import { download, normalizeFileName } from "../lib/utilities.js";
 import { SvgToCanvas } from "../lib/svg-to-canvas.js";
 import { Dropbox } from "../lib/dropbox.js";
 import { prettyPrintXml } from "../lib/pretty-print.js";
 import { empty } from "../lib/dom-tools.js";
-import {} from "./wc-svg-canvas.js"; //slow load until this component is ready
+import "./wc-svg-canvas.js"; //slows load until this component is ready
 
 function storedOrDefault(key, defaultValue = "") {
 	const storedValue = localStorage.getItem(key);
@@ -42,6 +42,7 @@ customElements.define("app-root",
 			this.cacheDom = this.cacheDom.bind(appRoot);
 			this.attachEvents = this.attachEvents.bind(appRoot);
 			this.attachSubviews = this.attachSubviews.bind(appRoot);
+			this.setLaunchQueue = this.setLaunchQueue.bind(appRoot);
 
 			this.connectedCallback = this.connectedCallback.bind(appRoot);
 			this.initSettings = this.initSettings.bind(appRoot);
@@ -74,8 +75,9 @@ customElements.define("app-root",
 			}
 
 			this.cacheDom();
+			this.setLaunchQueue();
 			this.attachSubviews();
-			this.attachEvents()
+			this.attachEvents();
 			this.initSettings();
 			this.update();
 		}
@@ -119,6 +121,25 @@ customElements.define("app-root",
 				gearModal: document.querySelector("#mod-gear"),
 				gearTool: document.querySelector("wc-gear-generator")
 			};
+		}
+
+		setLaunchQueue(){
+			if ("launchQueue" in window) {
+				launchQueue.setConsumer(async launchParams => {
+					if (launchParams.files.length) {
+						const svgs = launchParams.files.filter(f => /\.svg$/.test(f.name));
+						const csss = launchParams.files.filter(f => /\.css$/.test(f.name));
+						if(svgs.length > 0){
+							const file = await svgs[0].getFile();
+							this.subviews.svgEditor.setValue(await file.text());
+						}
+						if (csss.length > 0) {
+							const file = await csss[0].getFile()
+							this.subviews.cssEditor.setValue(await file.text());
+						}
+					}
+				});
+			}
 		}
 
 		attachSubviews() {
@@ -321,38 +342,43 @@ customElements.define("app-root",
 			this.fileUnhighlight();
 		}
 		async load() {
-			if (!window.chooseFileSystemEntries) {
+			if (!window.showOpenFilePicker) {
 				alert("File System not supported by this browser");
 			}
-			this.handle = await window.chooseFileSystemEntries({
-				accepts: [{
-					description: 'SVG file',
-					extensions: ['svg'],
-					mimeTypes: ['image/svg+xml'],
-				}]
+			const [handle] = await window.showOpenFilePicker({
+				types: [
+					{
+						description: 'SVG file',
+						accept: {
+							'image/svg+xml' : [".svg"]
+						}
+					}
+				]
 			});
+			this.handle = handle;
 			const file = await this.handle.getFile();
 			this.subviews.svgEditor.setValue(await file.text());
 		}
 
 		async save() {
-			if (!window.chooseFileSystemEntries) {
+			if (!window.showSaveFilePicker) {
 				alert("File System not supported by this browser");
 			}
 			if (!this.handle) {
-				this.handle = await window.chooseFileSystemEntries({
-					type: 'saveFile',
-					accepts: [{
-						description: 'SVG File',
-						extensions: ['svg'],
-						mimeTypes: ['image/svg+xml'],
-					}],
+				this.handle = await window.showSaveFilePicker({
+					types: [
+						{
+							description: 'SVG file',
+							accept: {
+								'image/svg+xml': [".svg"]
+							}
+						}
+					]
 				});
 			}
-			const writer = await this.handle.createWriter();
-			await writer.truncate(0);
-			await writer.write(0, this.subviews.svgEditor.getValue());
-			await writer.close();
+			const writable = await this.handle.createWritable();
+			await writable.write(this.subviews.svgEditor.getValue());
+			await writable.close();
 			alert("Save Successful!");
 		}
 
