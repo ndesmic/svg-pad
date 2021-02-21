@@ -1,3 +1,4 @@
+//This can probably be dumped for make-absolute...
 export class InstructionSimplifier {
     constructor() {
         this.bind(this);
@@ -16,6 +17,8 @@ export class InstructionSimplifier {
         instructionSimplifier.verticalLineRelative = this.verticalLineRelative.bind(instructionSimplifier);
         instructionSimplifier.cubicCurveAbsolute = this.cubicCurveAbsolute.bind(instructionSimplifier);
         instructionSimplifier.cubicCurveRelative = this.cubicCurveRelative.bind(instructionSimplifier);
+        instructionSimplifier.arcAbsolute = this.arcAbsolute.bind(instructionSimplifier);
+        instructionSimplifier.arcRelative = this.arcRelative.bind(instructionSimplifier);
     }
 
     simplifyInstructions(pathInstructions) {
@@ -44,7 +47,6 @@ export class InstructionSimplifier {
     }
 
     moveRelative(instructions, index, dx, dy) {
-        var instruction = instructions[index];
         return {
             type: "moveAbsolute",
             points: [this.currentPoint.x + dx, this.currentPoint.y + dy]
@@ -52,7 +54,6 @@ export class InstructionSimplifier {
     }
 
     lineAbsolute(instructions, index, x, y) {
-        let last = this.currentPoint;
         this.currentPoint = {
             x,
             y
@@ -64,42 +65,37 @@ export class InstructionSimplifier {
     }
 
     lineRelative(instructions, index, dx, dy) {
-        var instruction = instructions[index];
         return {
             type: "lineAbsolute",
-            points: [this.currentPoint.x, this.currentPoint.y, this.currentPoint.x + dx, this.currentPoint.y + dy]
+            points: [this.currentPoint.x + dx, this.currentPoint.y + dy]
         };
     }
 
     horizontalLineAbsolute(instructions, index, x) {
-        var instruction = instructions[index];
         return {
             type: "lineAbsolute",
-            points: [this.currentPoint.x, this.currentPoint.y, x, this.currentPoint.y]
+            points: [x, this.currentPoint.y]
         };
     }
 
     horizontalLineRelative(instructions, index, dx) {
-        var instruction = instructions[index];
         return {
             type: "lineAbsolute",
-            points: [this.currentPoint.x, this.currentPoint.y, this.currentPoint.x + dx, this.currentPoint.y]
+            points: [this.currentPoint.x + dx, this.currentPoint.y]
         };
     }
 
     verticalLineAbsolute(instructions, index, y) {
-        var instruction = instructions[index];
         return {
             type: "lineAbsolute",
-            points: [this.currentPoint.x, this.currentPoint.y, this.currentPoint.x, y]
+            points: [this.currentPoint.x, y]
         };
     }
 
     verticalLineRelative(instructions, index, dy) {
-        var instruction = instructions[index];
         return {
             type: "lineAbsolute",
-            points: [this.currentPoint.x, this.currentPoint.y, this.currentPoint.x, this.currentPoint.y + dy]
+            points: [this.currentPoint.x, this.currentPoint.y + dy]
         };
     }
 
@@ -112,7 +108,6 @@ export class InstructionSimplifier {
     }
 
     cubicCurveRelative(instructions, index, startCX, startCY, endCX, endCY, dx, dy) {
-        var instruction = instructions[index];
         return {
             type: "cubicCurveAbsolute",
             points: [startCX, startCY, endCX, endCY, this.currentPoint.x + dx, this.currentPoint.y + dy]
@@ -120,10 +115,24 @@ export class InstructionSimplifier {
     }
 
     cubicCurveShortAbsolute(instructions, index, endCX, endCY, x, y) {
-        var instruction = instructions[index];
         return {
             type: "cubicCurveAbsolute",
             points: [startCX, startCY, endCX, endCY, this.currentPoint.x + dx, this.currentPoint.y + dy]
+        };
+    }
+
+    arcAbsolute(instructions, index, rx, ry, xAxisRotation, largeArc, sweep, x, y){
+        this.currentPoint = {
+            x: x,
+            y: y
+        };
+        return instructions[index];
+    }
+
+    arcRelative(instructions, index, rx, ry, xAxisRotation, largeArc, sweep, x, y) {
+        return {
+            type: "arcAbsolute",
+            points: [rx, ry, xAxisRotation, largeArc, sweep, this.currentPoint.x + dx, this.currentPoint.y + dy]
         };
     }
 

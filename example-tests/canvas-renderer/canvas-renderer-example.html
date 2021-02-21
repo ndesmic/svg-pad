@@ -1,0 +1,119 @@
+<html>
+
+<body>
+	<section>
+		<h1>Line</h1>
+		<table>
+			<thead>
+				<td>Name</td>
+				<td>SVG</td>
+				<td>Canvas</td>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Basic Line</td>
+					<td>
+						<svg width="50" height="50">
+							<line x1="10" x2="0" y1="10" y2="30" stroke="#000" />
+						</svg>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Path Line H</td>
+					<td>
+						<svg width="50" height="50">
+							<path stroke="#000" d="M0,25 H50"></path>
+						</svg>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Path Line h</td>
+					<td>
+						<svg width="50" height="50">
+							<path stroke="#000" d="M0,25 h50"></path>
+						</svg>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Path Line V</td>
+					<td>
+						<svg width="50" height="50">
+							<path stroke="#000" d="M25,0 V50"></path>
+						</svg>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Path Line v</td>
+					<td>
+						<svg width="50" height="50">
+							<path stroke="#000" d="M25,0 v50"></path>
+						</svg>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Path Line L</td>
+					<td>
+						<svg width="50" height="50">
+							<path stroke="#000" d="M10,10 L0,30"></path>
+						</svg>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Path Line l</td>
+					<td>
+						<svg width="50" height="50">
+							<path stroke="#000" d="M10,10 l-10,20"></path>
+						</svg>
+					</td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+	<section>
+		<h1>Path (arc)</h1>
+		<table>
+			<thead>
+				<td>Name</td>
+				<td>SVG</td>
+				<td>Canvas</td>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Path Arc large sweep, positive sweep</td>
+					<td>
+						<svg width="70" height="70">
+							<path d="M 10 30 A 10 10 0 1 1 30 30" stroke="#000" fill="none" />
+						</svg>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Path Arc large sweep, negative sweep</td>
+					<td>
+						<svg width="70" height="70">
+							<path d="M 10 30 A 10 10 0 1 0 30 30" stroke="#000" fill="none" />
+						</svg>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Path Arc rotated</td>
+					<td>
+						<svg width="70" height="70">
+							<path d="M 10 30 A 10 20 30 1 0 30 30" stroke="#000" fill="none" />
+						</svg>
+					</td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+	<script src="canvas-renderer-example.js" type="module"></script>
+</body>

@@ -69,7 +69,7 @@ function setCanvasAttributes(canvas, svgElement){
 }
 
 function strokeAndFill(attrs, scope) {
-	if (attrs.fill) {
+	if (attrs.fill && attrs.fill !== "none") {
 		scope.context.fill();
 	}
 	if (attrs.stroke) {

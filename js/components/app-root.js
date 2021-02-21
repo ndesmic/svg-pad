@@ -221,7 +221,7 @@ customElements.define("app-root",
 			const cssData = this.subviews.cssEditor.getValue();
 
 			this.dom.preview.update(svgData, cssData);
-			this.dom.downloadButton.href = `data:image/svg+xml;utf8,${svgData}`;
+			this.dom.downloadButton.href = `data:image/svg+xml;utf8,${encodeURIComponent(svgData)}`;
 
 			localStorage.setItem("lastSvgSave", svgData);
 			localStorage.setItem("lastCssSave", cssData);

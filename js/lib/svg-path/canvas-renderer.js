@@ -16,6 +16,48 @@ const types = [
     "arcRelative"
 ];
 
+function rotate(position, angle, invertY = false) {
+    if(invertY){
+        return [
+            Math.cos(angle) * position[0] + Math.sin(angle) * position[1],
+            -Math.sin(angle) * position[0] + Math.cos(angle) * position[1]
+        ];
+    } else {
+        return [
+            Math.cos(angle) * position[0] - Math.sin(angle) * position[1],
+            Math.sin(angle) * position[0] + Math.cos(angle) * position[1]
+        ];
+    }
+}
+
+function angleBetweenVectors(v1, v2){
+    return Math.acos(dot(v1, v2) / (mag(v1) * mag(v2)))
+}
+
+function add(v1, v2){
+    return [v1[0] + v2[0], v1[1] + v2[1]];
+}
+
+function dot(v1, v2){
+    return v1[0] * v2[0] + v1[1] * v2[1];
+}
+
+function mag(v){
+    return Math.sqrt(v[0] ** 2 + v[1] ** 2);
+}
+
+function degreesToRadians(deg) {
+    return deg * (Math.PI / 180);
+}
+
+const TWO_PI = Math.PI * 2;
+export function normalizeAngle(angle) {
+    if (angle < 0) {
+        return TWO_PI - (Math.abs(angle) % TWO_PI);
+    }
+    return angle % TWO_PI;
+}
+
 export class CanvasRenderer {
 
     constructor(canvas = null) {
@@ -51,9 +93,11 @@ export class CanvasRenderer {
             }
         }
         if (options.fillColor && options.fillColor !== "none") {
+            this.context.fillStyle = options.fillColor;
             this.context.fill();
         }
         if (options.stroke) {
+            this.context.strokeStyle = options.stroke;
             this.context.stroke();
         }
     }
@@ -85,6 +129,7 @@ export class CanvasRenderer {
     }
 
     moveAbsolute(x, y) {
+        this.context.stroke();
         this.context.moveTo(x, y);
         this.currentPoint = {
             x,
@@ -131,5 +176,27 @@ export class CanvasRenderer {
             x,
             y
         };
+    }
+
+    arcAbsolute(rx, ry, xAxisRotation, largeArc, sweep, x, y){
+        const rotation  = degreesToRadians(xAxisRotation);
+        const mdx = (this.currentPoint.x - x) / 2; //mid delta x
+        const mdy = (this.currentPoint.y - y) / 2; //mid delta y
+        const [tx, ty] = rotate([mdx, mdy], rotation, true); //transformed x,y
+
+
+        const topTerm = (rx ** 2 * ry ** 2) - (rx ** 2 * ty ** 2) - (ry ** 2 * tx ** 2);
+        const bottomTerm = (rx ** 2 * ty ** 2) + (ry ** 2 * tx ** 2);
+        const radicant = topTerm / bottomTerm;
+        const coefficent = Math.sqrt(radicant) * (largeArc === sweep ? -1 : 1);
+
+        const tcx = coefficent * ((rx * ty) / ry); //transformed center x
+        const tcy = coefficent * -((ry * tx) / rx); //transformed center y
+        const [cx, cy] = add(rotate([tcx,tcy], rotation), [mdx, mdy]); //rotate around mdx,mdy
+        const startAngle = angleBetweenVectors([1,0], [(mdx - tcx), (mdy - tcy)]);
+        const deltaAngle = angleBetweenVectors([mdx - tcx, mdy - tcy], [-mdx - tcx,  -mdy- tcy]);
+        const endAngle = startAngle + deltaAngle;
+
+        this.context.ellipse(x + cx, x + cy, rx, ry, rotation, startAngle, endAngle, sweep !== 1);
     }
 }
