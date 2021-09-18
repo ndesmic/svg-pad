@@ -11,7 +11,7 @@
 -Text
 	-fill+stroke+style+weight
 -Path
-	*Not implemented
+	Partial
 -G
 	
 -Font

@@ -1,3 +1,5 @@
+import cssModule from "../../css//wc-svg-canvas.css" assert { type: "css" };
+
 customElements.define("wc-svg-canvas",
 	class svgcanvas extends HTMLElement {
 		static get observedAttributes(){
@@ -17,11 +19,12 @@ customElements.define("wc-svg-canvas",
 		}
 		render(){
 			this.attachShadow({ mode: "open" });
+			this.shadowRoot.adoptedStyleSheets = [cssModule];
 		}
 		update(svg, css){
 			const styleSheet = new CSSStyleSheet();
 			styleSheet.replaceSync(css);
-			this.shadowRoot.adoptedStyleSheets = [styleSheet];
+			this.shadowRoot.adoptedStyleSheets = [styleSheet, cssModule];
 			this.shadowRoot.innerHTML = svg;
 		}
 		cacheDom(){

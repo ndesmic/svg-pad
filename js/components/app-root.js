@@ -1,6 +1,5 @@
-import { download, normalizeFileName } from "../lib/utilities.js";
+import { download } from "../lib/utilities.js";
 import { SvgToCanvas } from "../lib/svg-to-canvas.js";
-import { Dropbox } from "../lib/dropbox.js";
 import { prettyPrintXml } from "../lib/pretty-print.js";
 import { empty } from "../lib/dom-tools.js";
 import "./wc-svg-canvas.js"; //slows load until this component is ready
@@ -55,7 +54,6 @@ customElements.define("app-root",
 			this.prettyPrintSvg = this.prettyPrintSvg.bind(appRoot);
 			this.load = this.load.bind(appRoot);
 			this.save = this.save.bind(appRoot);
-			this.cloudSaveFile = this.cloudSaveFile.bind(appRoot);
 			this.reset = this.reset.bind(appRoot);
 			this.fileDragOver = this.fileDragOver.bind(appRoot);
 			this.fileDragLeave = this.fileDragLeave.bind(appRoot);
@@ -70,7 +68,6 @@ customElements.define("app-root",
 
 		connectedCallback() {
 			this.options = {
-				dropbox: new Dropbox(this.getAttribute("dropbox-app-name"), this.getAttribute("dropbox-app-key")),
 				defaultSvg: prettyPrintXml(this.getAttribute("default-svg"))
 			}
 
@@ -92,7 +89,6 @@ customElements.define("app-root",
 				downloadButton: document.querySelector("#btn-download"),
 				exportPreviewButton: document.querySelector("#btn-export-preview"),
 				exportButton: document.querySelector("#btn-export"),
-				dropboxButton: document.querySelector("#btn-dropbox"),
 				resetButton: document.querySelector("#btn-reset"),
 				prettyPrintButton: document.querySelector("#btn-pretty-print"),
 				settingsButton: document.querySelector("#btn-settings"),
@@ -166,7 +162,6 @@ customElements.define("app-root",
 		attachEvents() {
 			this.subviews.svgEditor.on("change", this.update);
 			this.subviews.cssEditor.on("change", this.update);
-			this.dom.dropboxButton.addEventListener("click", this.cloudSaveFile);
 			this.dom.backgroundColorButton.addEventListener("click", this.changeBackgroundColor);
 			this.dom.exportPreviewButton.addEventListener("click", this.exportPreview);
 			this.dom.exportButton.addEventListener("click", this.exportImageDownload);
@@ -260,21 +255,6 @@ customElements.define("app-root",
 			const color = prompt("Please choose a color");
 			if (color) {
 				this.set.backgroundColor(color);
-			}
-		}
-
-		cloudSaveFile() {
-			if (!this.options.dropbox.isAuthorized()) {
-				this.options.dropbox.authorize();
-				return;
-			}
-			let fileName = prompt("Please enter a name.");
-			if (fileName) {
-				fileName = normalizeFileName(fileName);
-				this.options.dropbox.upload(this.svgBlob, {
-					path: fileName
-				})
-					.then(() => alert("success!"));
 			}
 		}
 

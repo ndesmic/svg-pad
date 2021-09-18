@@ -42,7 +42,7 @@ function getUrlAttr(element, name) {
 }
 
 function getFont(element) {
-	const family = getAttr(element, "font-family", "Times New Roman");
+	const family = getAttr(element, "font-family", "arial");
 	const weight = getAttr(element, "font-weight");
 	const style = getAttr(element, "font-style");
 	let size = getAttr(element, "font-size", "16px");
@@ -210,7 +210,9 @@ export class SvgToCanvas {
 		const attrs = getAttrs(element, ["x", "y", "height", "width"]);
 		setContext(scope.context, attrs);
 
+		scope.context.beginPath();
 		scope.context.rect(attrs.x, attrs.y, attrs.width, attrs.height);
+		scope.context.closePath();
 		strokeAndFill(attrs, scope);
 	}
 
@@ -259,15 +261,22 @@ export class SvgToCanvas {
 	drawEllipse(element, scope) {
 		const attrs = getAttrs(element, ["cx", "cy", "rx", "ry"]);
 		setContext(scope.context, attrs);
-		drawOval(attrs.cx, attrs.cy, attrs.rx, attrs.ry, scope);
+
+		scope.context.beginPath();
+		scope.context.ellipse(attrs.cx, attrs.cy, attrs.rx, attrs.ry, 0, 0, Math.PI * 2, true);
+		scope.context.closePath();
+
 		strokeAndFill(attrs, scope);
 	}
 
 	drawOval(cx, cy, rx, ry, scope) {
 		scope.context.beginPath();
 		scope.context.translate(cx - rx, cy - ry);
-		scope.context.scale(rx, ry);
+		//scope.context.scale(rx, ry);
 		scope.context.arc(1, 1, 1, 0, 2 * Math.PI, false);
+		scope.context.closePath();
+
+		strokeAndFill(attrs, scope);
 	}
 
 	drawLine(element, scope) {

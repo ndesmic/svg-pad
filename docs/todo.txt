@@ -1,3 +1,5 @@
+UI
+=================================
 -add filter debug system
 -saving combined CSS+SVG
 -combined CSS+SVG
@@ -11,7 +13,6 @@
 	-ctrl + s
 	-ctrl + alt + s
 -undo
--dropbox icon
 -clip UI
 -g UI
 -font UI
@@ -20,24 +21,20 @@
 -background for SVG workspace
 -background for CSS workspace
 
+Tools
 ===================================
 
--bake CSS into SVG
+- Pills
+- Lightbulbs
+- Hearts
+- Squircles
+- Spiral
+- Wave
+- Lightning bolt
+- ECG
+- Gems (3D raster)
 
-===================================
-Tools:
-
-Pills
-Lightbulbs
-Hearts
-Squircles
-Spiral
-Wave
-Lightning bolt
-ECG
-Gems (3D raster)
-
-===================================
+- bake CSS into SVG
 
 - Relative to Absolute
 - Absolute to Relative
@@ -48,3 +45,8 @@ Gems (3D raster)
 - Arbitrary rotation
 - Scale
 - Transform baking
+
+Bugs
+=====================================
+- corner radius
+- Path arc
